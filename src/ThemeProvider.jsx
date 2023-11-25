@@ -8,8 +8,8 @@ const color = getColors();
 
 export default function ThemeProvider({
     children,
+    storageKey,
     theme: startTheme,
-    storageKey = 'theme-preference',
 }) {
     const [theme, setTheme] = useState(startTheme ?? getPreference(storageKey));
 
