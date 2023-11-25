@@ -6,7 +6,11 @@ import { getPreference, setPreference, getColors } from './helper/theme.helper';
 
 const color = getColors();
 
-export default function ThemeProvider({ children, storageKey, theme: startTheme }) {
+export default function ThemeProvider({
+    children,
+    theme: startTheme,
+    storageKey = 'theme-preference',
+}) {
     const [theme, setTheme] = useState(startTheme ?? getPreference(storageKey));
 
     useEffect(() => {
