@@ -2,7 +2,7 @@
   "name": "@designcise/next-theme-toggle",
   "version": "1.0.2",
   "description": "A simple theme toggle for Next.js 13+",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "jest --silent=false"
   },
