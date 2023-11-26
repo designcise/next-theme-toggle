@@ -3,7 +3,7 @@
   "version": "1.0.2",
   "description": "A simple theme toggle for Next.js 13+",
   "main": "dist/index.js",
-  "files": ["dist"],
+  "files": ["src", "dist"],
   "scripts": {
     "build": "rm -rf dist && NODE_ENV=production babel src/ --out-dir dist --copy-files",
     "test": "jest --silent=false"
