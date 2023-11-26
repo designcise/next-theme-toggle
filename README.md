@@ -1,14 +1,6 @@
 # next-theme-toggle
 
-## Expectations
-
-Result of using this package will be that the following are added to the `<html>` element:
-
-```html
-<html class="dark" style="color-scheme:dark">
-```
-
-After which you can [use different CSS selectors to create color scheme](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js#switching-theme) based CSS variables or style rules to switch between colors based on the active theme.
+This package is based on [https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js).
 
 ## Goals
 
@@ -19,6 +11,16 @@ The goal of the project is to:
 - Avoid flicker on page load
 - Have no unnecessary bloat
 - Have very minimal configuration
+
+## Expectations
+
+Result of using this package will be that the following are added to the `<html>` element:
+
+```html
+<html class="dark" style="color-scheme:dark">
+```
+
+After which you can [use different CSS selectors to create color scheme](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js#switching-theme) based CSS variables or style rules to switch between colors based on the active theme.
 
 ## Installation
 
