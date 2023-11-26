@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "files": ["src", "dist"],
   "scripts": {
-    "build": "rm -rf dist && NODE_ENV=production babel src/ --out-dir dist --copy-files",
+    "prepare": "rm -rf dist && NODE_ENV=production babel src/ --out-dir dist --copy-files",
     "test": "jest --silent=false"
   },
   "author": "Daniyal Hamid",
