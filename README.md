@@ -14,11 +14,11 @@ After which you can [use different CSS selectors to create color scheme](https:/
 
 The goal of the project is to:
 
-- Have no unnecessary bloat
 - Provide an easy way of toggling between light and dark themes
-- Auto-switching on initial page load based on system settings
-- Avoid flicker on load
-- Very minimal configuration
+- Auto-switch theme on page load based on system settings
+- Avoid flicker on page load
+- Have no unnecessary bloat
+- Have very minimal configuration
 
 ## Installation
 
@@ -56,13 +56,13 @@ export default async function RootLayout() {
   const theme = cookies().get(THEME_STORAGE_KEY)?.value;
 
   return (
-    &lt;html lang="en"&gt;
-      &lt;body&gt;
-        &lt;ThemeProvider storageKey={THEME_STORAGE_KEY}} theme={theme}&gt;
+    <html lang="en">
+      <body>
+        <ThemeProvider storageKey={THEME_STORAGE_KEY}} theme={theme}>
           {children}
-        &lt;/ThemeProvider&gt;
-      &lt;/body&gt;
-    &lt;/html&gt;
+        </ThemeProvider>
+      </body>
+    </html>
   )
 }
 ```
@@ -80,7 +80,7 @@ export default function ToggleThemeButton() {
   const { toggleTheme } = useTheme();
 
   return (
-    &lt;button onClick={toggleTheme}&gt;Toggle Theme&lt;/button&gt;
+    <button onClick={toggleTheme}>Toggle Theme</button>
   )
 }
 ```
@@ -93,11 +93,11 @@ import ToggleThemeButton from '@/components/ToggleThemeButton';
 
 export default async function Home() {
   return (
-    &lt;main&gt;
-      &lt;h1&gt;Hello World&lt;/h1&gt;
+    <main>
+      <h1>Hello World</h1>
 
-      &lt;ToggleThemeButton /&gt;
-    &lt;/main&gt;
+      <ToggleThemeButton />
+    </main>
   )
 }
 ```
