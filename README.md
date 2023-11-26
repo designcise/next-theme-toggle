@@ -208,7 +208,37 @@ $ yarn test
 
 ## Issues
 
+### Reporting
+
 https://github.com/designcise/next-theme-toggle/issues
+
+### Troubleshooting Common Issues
+
+#### Tailwind not updating dark mode styling
+
+This can happen when you have your CSS or SASS file in a sub-folder that is not listed in `content` array in the `tailwind.config.js`:
+
+```js
+// ...
+  content: [
+    './pages/**/*.{js,jsx}',
+    './components/**/*.{js,jsx}',
+    './app/**/*.{js,jsx}',
+    './src/**/*.{js,jsx}',
+  ],
+// ...
+```
+
+To fix this, you can add the folder where your CSS or SASS file is located. For example:
+
+```js
+// ...
+  content: [
+    // ...
+    './src/styles/**/*.css',
+  ],
+// ...
+```
 
 ## Contributing
 
