@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState, memo } from 'react';
+import React, { useEffect, useState, useCallback, memo } from 'react';
 import ThemeContext from './ThemeContext';
 import { getPreference, setPreference, getColors } from './helper/theme.helper';
 
@@ -20,10 +20,14 @@ export default function ThemeProvider({
 
     useEffect(() => {
         setPreference(storageKey, theme);
-    }, [storageKey, theme])
+    }, [storageKey, theme]);
+
+    const toggleTheme = useCallback(() => {
+        setTheme(theme === color.dark ? color.light : color.dark);
+    }, [theme, setTheme]);
 
     return (
-        <ThemeContext.Provider value={{ theme, color, setTheme }}>
+        <ThemeContext.Provider value={{ theme, color, setTheme, toggleTheme }}>
             <AntiFlickerScript theme={theme} color={color} />
             {children}
         </ThemeContext.Provider>
