@@ -7,8 +7,8 @@ import { getPreference, setPreference, getColors } from './helper/theme.helper';
 const color = getColors();
 
 const AntiFlickerScript = memo(({ theme, color }) => {
-    const scriptSrc = (() => `(function (theme,root) {root.classList.remove(\`'${Object.values(color).join("','")}'\`);root.classList.add(theme);root.style.colorScheme = theme;})('${theme}', document.firstElementChild)`)();
-    return <script dangerouslySetInnerHTML={{ __html: scriptSrc }} />
+    const script = (() => `(function(theme,root){root.classList.remove(\`'${Object.values(color).join("','")}'\`);root.classList.add(theme);root.style.colorScheme=theme;})('${theme}',document.firstElementChild)`)();
+    return <script dangerouslySetInnerHTML={{ __html: script }} />
 }, () => true);
 
 export default function ThemeProvider({
