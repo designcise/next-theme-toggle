@@ -1,15 +1,11 @@
 'use client'
 
-import React, { useEffect, useState, useCallback, memo } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import ThemeContext from './ThemeContext';
 import { getPreference, setPreference, getColors } from './helper/theme.helper';
+import AntiFlickerScript from './AntiFlickerScript';
 
 const color = getColors();
-
-const AntiFlickerScript = memo(function Script({ theme, color }) {
-    const script = (() => `(function(theme,root){root.classList.remove(\`'${Object.values(color).join("','")}'\`);root.classList.add(theme);root.style.colorScheme=theme;})('${theme}',document.firstElementChild)`)();
-    return <script dangerouslySetInnerHTML={{ __html: script }} />
-}, () => true);
 
 export default function ThemeProvider({
     children,
