@@ -14,11 +14,11 @@ After which you can [use different CSS selectors to create color scheme](https:/
 
 The goal of the project is to:
 
-✅ Have no unnecessary bloat
-✅ Provide an easy way of toggling between light and dark themes
-✅ Auto-switching on initial page load based on system settings
-✅ Avoid flicker on load
-✅ Very minimal configuration
+- Have no unnecessary bloat
+- Provide an easy way of toggling between light and dark themes
+- Auto-switching on initial page load based on system settings
+- Avoid flicker on load
+- Very minimal configuration
 
 ## Installation
 
