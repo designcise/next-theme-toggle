@@ -4,7 +4,7 @@
 
 Result of using this package will be that the following are added to the `<html>` element:
 
-```
+```html
 <html class="dark" style="color-scheme:dark">
 ```
 
@@ -29,13 +29,13 @@ The goal of the project is to:
 
 ### npm
 
-```
+```shell
 $ npm install @designcise/next-theme-toggle
 ```
 
 ### yarn
 
-```
+```shell
 $ yarn add @designcise/next-theme-toggle
 ```
 
@@ -45,7 +45,7 @@ At a bare minimum you need to do the following:
 
 1. Pass the `storageKey` and `theme` preference (read from cookies) to the `ThemeProvider`, which wrapping around all components you wish to pass the theme down to:
 
-```
+```jsx
 // app/layout.js
 import { cookies } from 'next/headers';
 import { ThemeProvider } from '@designcise/next-theme-toggle';
@@ -69,7 +69,7 @@ export default async function RootLayout() {
 
 2. Create a button to toggle between light and dark theme:
 
-```
+```jsx
 // components/ToggleThemeButton/index.jsx
 'use client'
 
@@ -87,7 +87,7 @@ export default function ToggleThemeButton() {
 
 3. Add toggle button to your page(s):
 
-```
+```jsx
 // app/page.js
 import ToggleThemeButton from '@/components/ToggleThemeButton';
 
@@ -104,8 +104,8 @@ export default async function Home() {
 
 4. Add styling for dark and light themes:
 
-```
-// globals.css
+```css
+/* globals.css */
 :root body {
   background: white;
 }
@@ -117,8 +117,8 @@ export default async function Home() {
 
 or:
 
-```
-// globals.css
+```css
+/* globals.css */
 body {
   background: white;
 }
@@ -130,8 +130,8 @@ body {
 
 or:
 
-```
-// globals.css
+```css
+/* globals.css */
 body {
   background: white;
 }
