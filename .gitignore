@@ -10,6 +10,7 @@
 /.next/
 /_next/
 /out/
+/dist
 
 # production
 /build
