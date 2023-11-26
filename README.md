@@ -87,6 +87,28 @@ export default function ToggleThemeButton() {
 }
 ```
 
+You can also do this manually using `theme`, `color`, and `setTheme()`, for example, like so:
+
+```jsx
+// components/ToggleThemeButton/index.jsx
+'use client'
+
+import React, { useContext } from 'react';
+import { useTheme } from '@designcise/next-theme-toggle';
+
+export default function ToggleThemeButton() {
+    const { theme, color, setTheme } = useTheme();
+
+  return (
+    <button
+        onClick={() => setTheme(theme === color.dark ? color.light : color.dark)}
+    >
+        Toggle Theme
+    </button>
+  )
+}
+```
+
 3. Add toggle button to your page(s):
 
 ```jsx
