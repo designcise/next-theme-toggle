@@ -20,7 +20,7 @@ export default function ThemeProvider({
 
     useEffect(() => {
         setPreference(storageKey, theme);
-    }, [theme])
+    }, [storageKey, theme])
 
     return (
         <ThemeContext.Provider value={{ theme, color, setTheme }}>
