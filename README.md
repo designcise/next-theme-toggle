@@ -168,6 +168,22 @@ The `useTheme()` hook does not take any params; it returns the following:
 | `setTheme`    | Function |                      Setter to set new theme.                       |
 | `toggleTheme` | Function |            Toggles the theme between `light` and `dark`.            |
 
+## Testing
+
+Tests are written using React Testing Library and Jest. You can run the tests using the following command:
+
+### npm
+
+```shell
+$ npm test
+```
+
+### yarn
+
+```shell
+$ yarn test
+```
+
 ## Issues
 
 https://github.com/designcise/next-theme-toggle/issues
