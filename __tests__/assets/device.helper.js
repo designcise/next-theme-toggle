@@ -18,3 +18,7 @@ export function setDeviceCookie(name, value) {
         value: `${name}=${value}`,
     });
 }
+
+export function clearAllDeviceCookies() {
+    document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+}
