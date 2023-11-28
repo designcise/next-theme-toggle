@@ -53,17 +53,17 @@ import { cookies } from 'next/headers';
 import { ThemeProvider } from '@designcise/next-theme-toggle';
 import { getColors } from '@designcise/next-theme-toggle';
 
-// 1.1: specify key for cookie storage
+// 1: specify key for cookie storage
 const THEME_STORAGE_KEY = 'theme-preference';
 const color = getColors();
 
 export default async function RootLayout() {
-  // 1.2: get the user theme preference value from cookie, if one exists
-  // 1.3: set a default value in case the cookie doesn't exist (e.g. `?? color.light`)
+  // 2.1: get the user theme preference value from cookie, if one exists
+  // 2.2: set a default value in case the cookie doesn't exist (e.g. `?? color.light`)
   const theme = cookies().get(THEME_STORAGE_KEY)?.value ?? color.light;
 
-  // 1.4: set `theme` on `className` and `colorScheme` to prevent flicker
-  // 1.5: wrap components with `ThemeProvider` to pass theme down to all components
+  // 3.1: set `theme` on `className` and `colorScheme` to prevent flicker
+  // 3.2: wrap components with `ThemeProvider` to pass theme down to all components
   return (
     <html className={theme} style={{ colorScheme: theme }}>
       <body>
