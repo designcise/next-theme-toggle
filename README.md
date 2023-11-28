@@ -59,7 +59,7 @@ const color = getColors();
 
 export default async function RootLayout() {
   // 1.2: get the user theme preference value from cookie, if one exists
-  // 1.3: set a default value in case the cookie doesn't exist
+  // 1.3: set a default value in case the cookie doesn't exist (e.g. `?? color.light`)
   const theme = cookies().get(THEME_STORAGE_KEY)?.value ?? color.light;
 
   // 1.4: set `theme` on `className` and `colorScheme` to prevent flicker
