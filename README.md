@@ -63,7 +63,7 @@ export default async function RootLayout() {
   const theme = cookies().get(THEME_STORAGE_KEY)?.value ?? color.light;
 
   // 1.4: set `theme` on `className` and `colorScheme` to prevent flicker
-  // 1.5: wrap components with `ThemeProvider`
+  // 1.5: wrap components with `ThemeProvider` to pass theme down to all components
   return (
     <html className={theme} style={{ colorScheme: theme }}>
       <body>
