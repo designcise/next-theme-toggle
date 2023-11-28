@@ -1,6 +1,6 @@
 {
   "name": "@designcise/next-theme-toggle",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "description": "A simple theme toggle for Next.js 13+",
   "main": "dist/index.js",
   "files": [
