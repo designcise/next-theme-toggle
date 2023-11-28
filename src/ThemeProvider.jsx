@@ -3,7 +3,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import ThemeContext from './ThemeContext';
 import { getPreference, setPreference, getColors } from './helper/theme.helper';
-import AntiFlickerScript from './AntiFlickerScript';
 
 const color = getColors();
 
@@ -24,7 +23,6 @@ export default function ThemeProvider({
 
     return (
         <ThemeContext.Provider value={{ theme, color, setTheme, toggleTheme }}>
-            <AntiFlickerScript theme={theme} color={color} />
             {children}
         </ThemeContext.Provider>
     );
