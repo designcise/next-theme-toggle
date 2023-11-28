@@ -11,6 +11,10 @@ const applyPreference = (theme) => {
 };
 
 export const getPreference = (storageKey) => {
+    if (typeof window === 'undefined') {
+        return;
+    }
+
     const cookie = getCookie(storageKey);
 
     if (cookie) {
