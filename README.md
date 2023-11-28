@@ -45,22 +45,29 @@ $ yarn add @designcise/next-theme-toggle
 
 At a bare minimum you need to do the following:
 
-1. Pass the `storageKey` and `theme` preference (read from cookies) to the `ThemeProvider`, which wrapping around all components you wish to pass the theme down to:
+1. In your Next.js application's root layout file (typically, `app/layout.js`), do the following:
 
 ```jsx
 // app/layout.js
 import { cookies } from 'next/headers';
 import { ThemeProvider } from '@designcise/next-theme-toggle';
+import { getColors } from '@designcise/next-theme-toggle';
 
+// 1.1: specify key for cookie storage
 const THEME_STORAGE_KEY = 'theme-preference';
+const color = getColors();
 
 export default async function RootLayout() {
-  const theme = cookies().get(THEME_STORAGE_KEY)?.value;
+  // 1.2: get the user theme preference value from cookie, if one exists
+  // 1.3: set a default value in case the cookie doesn't exist
+  const theme = cookies().get(THEME_STORAGE_KEY)?.value ?? color.light;
 
+  // 1.4: set `theme` on `className` and `colorScheme` to prevent flicker
+  // 1.5: wrap components with `ThemeProvider`
   return (
-    <html lang="en">
+    <html className={theme} style={{ colorScheme: theme }}>
       <body>
-        <ThemeProvider storageKey={THEME_STORAGE_KEY}} theme={theme}>
+        <ThemeProvider storageKey={THEME_STORAGE_KEY} theme={theme}>
           {children}
         </ThemeProvider>
       </body>
@@ -167,6 +174,8 @@ body {
 }
 ```
 
+That's it! You should have light/dark theme toggle in your Next.js application.
+
 ## API
 
 ### `ThemeProvider`
@@ -190,6 +199,15 @@ The `useTheme()` hook does not take any params; it returns the following:
 | `setTheme`    | Function |                      Setter to set new theme.                       |
 | `toggleTheme` | Function |            Toggles the theme between `light` and `dark`.            |
 
+### `getColors()`
+
+Returns an object, with the following:
+
+| Property |  Type  |   Value   |               Description                |
+|----------|:------:|:---------:|:----------------------------------------:|
+| `light`  | String | `'light'` |    Color value used for light theme.     |
+| `theme`  | String | `'dark'`. |     Color value used for dark theme.     |
+
 ## Testing
 
 Tests are written using React Testing Library and Jest. You can run the tests using the following command:
@@ -210,7 +228,8 @@ $ yarn test
 
 ### Reporting
 
-https://github.com/designcise/next-theme-toggle/issues
+* File issues at https://github.com/designcise/next-theme-toggle/issues
+* Issue patches to https://github.com/designcise/next-theme-toggle/pulls
 
 ### Troubleshooting Common Issues
 
