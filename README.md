@@ -20,7 +20,7 @@ Result of using this package will be that the following are added to the `<html>
 <html class="dark" style="color-scheme:dark">
 ```
 
-After which you can [use different CSS selectors to create color scheme](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js#switching-theme) based CSS variables or style rules to switch between colors based on the active theme.
+After which you can [use different CSS selectors to create styles for dark/light themes](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js#switching-theme).
 
 ## Installation
 
@@ -50,8 +50,8 @@ At a bare minimum you need to do the following:
 ```jsx
 // app/layout.js
 import { cookies } from 'next/headers';
-import { ThemeProvider } from '@designcise/next-theme-toggle';
-import { getColors } from '@designcise/next-theme-toggle';
+import { Html, ThemeProvider } from '@designcise/next-theme-toggle';
+import { getColors } from '@designcise/next-theme-toggle/server';
 
 // 1: specify key for cookie storage
 const THEME_STORAGE_KEY = 'theme-preference';
@@ -62,19 +62,31 @@ export default async function RootLayout() {
   // 2.2: set a default value in case the cookie doesn't exist (e.g. `?? color.light`)
   const theme = cookies().get(THEME_STORAGE_KEY)?.value ?? color.light;
 
-  // 3.1: set `theme` on `className` and `colorScheme` to prevent flicker
+  // 3.1: use the `Html` component to prevent flicker
   // 3.2: wrap components with `ThemeProvider` to pass theme down to all components
   return (
-    <html className={theme} style={{ colorScheme: theme }}>
+    <Html theme={theme}>
       <body>
         <ThemeProvider storageKey={THEME_STORAGE_KEY} theme={theme}>
           {children}
         </ThemeProvider>
       </body>
-    </html>
+    </Html>
   )
 }
 ```
+
+The `Html` component is added for convenience. If you do not wish to use it, then you can achieve the same with the native `html` element in the following way:
+
+```jsx
+// replace:
+<Html theme={theme}>
+
+// with:
+<html className={theme} style={{ colorScheme: theme }}>
+```
+
+Both these approaches help you avoid flicker on initial page load.
 
 2. Create a button to toggle between light and dark theme:
 
@@ -94,7 +106,7 @@ export default function ToggleThemeButton() {
 }
 ```
 
-You can also do this manually using `theme`, `color`, and `setTheme()`, for example, like so:
+You can also do this manually by using `theme`, `color`, and `setTheme()`, for example, like so:
 
 ```jsx
 // components/ToggleThemeButton/index.jsx
@@ -207,6 +219,18 @@ Returns an object, with the following:
 |----------|:------:|:---------:|:----------------------------------------:|
 | `light`  | String | `'light'` |    Color value used for light theme.     |
 | `theme`  | String | `'dark'`. |     Color value used for dark theme.     |
+
+The `getColors()` function can be used in client components, as well as server components. For server components you should import them like so:
+
+```jsx
+import { getColors } from '@designcise/next-theme-toggle/server';
+```
+
+For client components, you can import it like so:
+
+```jsx
+import { getColors } from '@designcise/next-theme-toggle';
+```
 
 ## Testing
 
