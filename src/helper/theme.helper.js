@@ -2,6 +2,7 @@ import { getCookie, setCookie, eraseCookie } from './cookie.helper';
 import { getColors } from './color.helper';
 
 const color = getColors();
+const isServer = () => (typeof window === 'undefined');
 
 const applyPreference = (theme) => {
     const root = document.firstElementChild;
@@ -9,8 +10,6 @@ const applyPreference = (theme) => {
     root.classList.add(theme);
     root.style.colorScheme = theme;
 };
-
-const isServer = () => (typeof window === 'undefined');
 
 export const getPreference = (storageKey) => {
     if (isServer()) {
