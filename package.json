@@ -2,11 +2,10 @@
   "name": "@designcise/next-theme-toggle",
   "version": "2.0.0",
   "description": "A simple theme toggle for Next.js 13+",
-  "files": [
-    "src",
-    "dist"
-  ],
-  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./server": "./dist/server.js"
+  },
   "files": [
     "src",
     "dist"
@@ -31,6 +30,8 @@
     "@babel/plugin-proposal-optional-chaining": "^7.21.0",
     "@babel/preset-env": "^7.23.3",
     "@babel/preset-react": "^7.23.3",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "@testing-library/react": "^14.1.2",
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
