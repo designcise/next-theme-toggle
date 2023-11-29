@@ -15,7 +15,7 @@ describe('provider', () => {
     test.each([
         'light',
         'dark',
-    ])('should set `colorScheme` and class name to "%s" theme', (theme) => {
+    ])('should set `colorScheme` and class name to "%s" theme according to saved preference', (theme) => {
         const storageKey = 'test';
         setDeviceCookie(storageKey, theme);
 
