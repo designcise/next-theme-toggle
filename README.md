@@ -220,7 +220,9 @@ Returns an object, with the following:
 | `light`  | String | `'light'` |    Color value used for light theme.     |
 | `theme`  | String | `'dark'`. |     Color value used for dark theme.     |
 
-The `getColors()` function can be used in client components, as well as server components. For server components you should import them like so:
+> **NOTE**: The `getColors()` function can be used in both, the client components and server components.
+
+For server components you should import them like so:
 
 ```jsx
 import { getColors } from '@designcise/next-theme-toggle/server';
