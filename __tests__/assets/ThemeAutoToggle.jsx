@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react';
-import { useTheme } from '../../src';
+import { useTheme } from '../../src/client';
 
 export default function ToggleThemeButton() {
     const { toggleTheme } = useTheme();

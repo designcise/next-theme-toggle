@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { ThemeProvider } from '../src';
+import { ThemeProvider } from '../src/client';
 import { clearAllDeviceCookies, setDeviceTheme } from './assets/device.helper';
 import ThemeAutoToggle from './assets/ThemeAutoToggle';
 import ThemeManualToggle from './assets/ThemeManualToggle';
