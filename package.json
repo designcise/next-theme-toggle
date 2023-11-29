@@ -10,7 +10,6 @@
     "src",
     "dist"
   ],
-  "type": "module",
   "scripts": {
     "prepare": "rollup -c",
     "start": "rollup -c -w",
