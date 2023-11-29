@@ -10,8 +10,10 @@ const applyPreference = (theme) => {
     root.style.colorScheme = theme;
 };
 
+const isServer = () => (typeof window === 'undefined');
+
 export const getPreference = (storageKey) => {
-    if (typeof window === 'undefined') {
+    if (isServer()) {
         return;
     }
 
