@@ -1,9 +1,11 @@
 import { getCookie, setCookie, eraseCookie } from './cookie.helper';
 import { getColors } from './color.helper';
 
+const color = getColors();
+
 const applyPreference = (theme) => {
     const root = document.firstElementChild;
-    root.classList.remove(...Object.values(getColors()));
+    root.classList.remove(...Object.values(color));
     root.classList.add(theme);
     root.style.colorScheme = theme;
 };
@@ -19,7 +21,7 @@ export const getPreference = (storageKey) => {
         return cookie;
     }
 
-    return window.matchMedia(`(prefers-color-scheme: ${THEME_DARK})`).matches ? THEME_DARK : THEME_LIGHT;
+    return window.matchMedia(`(prefers-color-scheme: ${color.dark})`).matches ? color.dark : color.light;
 };
 
 export const setPreference = (storageKey, theme) => {
