@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "A simple theme toggle for Next.js 13+",
   "exports": {
-    ".": "./dist/index.js",
+    ".": "./dist/client.js",
     "./server": "./dist/server.js"
   },
   "files": [
