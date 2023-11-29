@@ -222,7 +222,7 @@ Returns an object, with the following:
 
 > **NOTE**: The `getColors()` function can be used in both, the client components and server components.
 
-For server components you should import them like so:
+For server components you can import `getColors()` like so:
 
 ```jsx
 import { getColors } from '@designcise/next-theme-toggle/server';
