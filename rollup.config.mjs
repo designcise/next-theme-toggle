@@ -1,9 +1,8 @@
-const pkg = require('./package.json');
-const swc = require('rollup-plugin-swc3');
-const swcPreserveDirectives = require('rollup-swc-preserve-directives');
-const resolve = require('@rollup/plugin-node-resolve');
+import { swc } from 'rollup-plugin-swc3';
+import swcPreserveDirectives from 'rollup-swc-preserve-directives';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 
-module.exports = {
+export default {
     input: {
         client: 'src/client.js',
         server: 'src/server.js'
@@ -17,9 +16,9 @@ module.exports = {
         strict: false,
     }],
     plugins: [
-        swc.swc(),
-        swcPreserveDirectives.default(),
-        resolve({
+        swc(),
+        swcPreserveDirectives(),
+        nodeResolve({
             extensions: ['.js'],
             mainFields: ['exports', 'main'],
         }),
