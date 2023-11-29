@@ -1,11 +1,9 @@
 import { getCookie, setCookie, eraseCookie } from './cookie.helper';
-
-const THEME_DARK = 'dark'
-const THEME_LIGHT = 'light';
+import { getColors } from './color.helper';
 
 const applyPreference = (theme) => {
     const root = document.firstElementChild;
-    root.classList.remove(THEME_LIGHT, THEME_DARK);
+    root.classList.remove(...Object.values(getColors()));
     root.classList.add(theme);
     root.style.colorScheme = theme;
 };
@@ -29,5 +27,3 @@ export const setPreference = (storageKey, theme) => {
     setCookie(storageKey, theme, 365);
     applyPreference(theme);
 }
-
-export const getColors = () => ({ dark: THEME_DARK, light: THEME_LIGHT });

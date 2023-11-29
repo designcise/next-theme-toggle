@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import ThemeContext from './ThemeContext';
-import { getPreference, setPreference, getColors } from './helper/theme.helper';
+import { getPreference, setPreference } from './helper/theme.helper';
+import { getColors } from './helper/color.helper';
 
 const color = getColors();
 
