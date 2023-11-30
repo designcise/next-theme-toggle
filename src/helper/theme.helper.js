@@ -1,4 +1,4 @@
-import { getCookie, setCookie, eraseCookie } from './cookie.helper';
+import { read, write, erase } from '../adapter/storage.adapter';
 import { getColors } from './color.helper';
 
 const color = getColors();
@@ -16,7 +16,7 @@ export const getPreference = (storageKey) => {
         return;
     }
 
-    const cookie = getCookie(storageKey);
+    const cookie = read(storageKey);
 
     if (cookie) {
         return cookie;
@@ -26,7 +26,7 @@ export const getPreference = (storageKey) => {
 };
 
 export const setPreference = (storageKey, theme) => {
-    eraseCookie(storageKey);
-    setCookie(storageKey, theme, 365);
+    erase(storageKey);
+    write(storageKey, theme);
     applyPreference(theme);
 }
