@@ -86,7 +86,13 @@ The `Html` component is added for convenience. If you do not wish to use it, the
 <html className={theme} style={{ colorScheme: theme }}>
 ```
 
-Both these approaches help you avoid flicker on initial page load.
+You may also choose to not do this step altogether and pass `autoAntiFlicker={true}` (or just `autoAntiFlicker`) to the `ThemeProvider` component, which will automatically inject a script into DOM that takes care of this for you. For example:
+
+```jsx
+<ThemeProvider storageKey={THEME_STORAGE_KEY} theme={theme} autoAntiFlicker>
+```
+
+All these approaches help you avoid flicker on initial page load.
 
 2. Create a button to toggle between light and dark theme:
 
