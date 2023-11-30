@@ -12,7 +12,7 @@ export default function ThemeProvider({
     children,
     storageKey,
     theme: startTheme,
-    autoAntiFlicker= true,
+    autoAntiFlicker= false,
 }) {
     const [theme, setTheme] = useState(startTheme ?? getPreference(storageKey));
 
