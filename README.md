@@ -43,6 +43,8 @@ $ yarn add @designcise/next-theme-toggle
 
 ## Quickstart
 
+> **NOTE**: Please note that this approach relies on using cookies on client and server side, and will, therefore, cause the route to be dynamically rendered as cookies rely on request time information.
+
 At a bare minimum you need to do the following:
 
 1. In your Next.js application's root layout file (typically, `app/layout.js`), do the following:
@@ -93,6 +95,8 @@ You may also choose to not do this step altogether and pass `autoAntiFlicker={tr
 ```
 
 All these approaches help you avoid flicker on initial page load.
+
+> **NOTE**: Please note that using the script injection method will show the `Warning: Extra attributes from the server: class,style` warning in console in the dev environment only. This is unavoidable unfortunately, as it happens because the injected script adds additional `class` and `style` attributes to the `html` element which do not originally exist on the server-side generated page.
 
 2. Create a button to toggle between light and dark theme:
 
