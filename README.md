@@ -204,11 +204,12 @@ That's it! You should have light/dark theme toggle in your Next.js application.
 
 You can pass the following props to `ThemeProvider`:
 
-| Prop         |                     Type                     |                         Description                          |
-|--------------|:--------------------------------------------:|:------------------------------------------------------------:|
-| `children`   | `React.ReactChild`&vert;`React.ReactChild[]` | Components to which the theme is passed down to via context. |
-| `storageKey` |                    String                    |              Name of the key used for storage.               |
-| `theme`      |                    String                    |        Starting theme; can be `'light'` or `'dark'`.         |
+| Prop              |                     Type                     |                         Description                          |
+|-------------------|:--------------------------------------------:|:------------------------------------------------------------:|
+| `children`        | `React.ReactChild`&vert;`React.ReactChild[]` | Components to which the theme is passed down to via context. |
+| `storageKey`      |                    String                    |              Name of the key used for storage.               |
+| `theme`           |                    String                    |        Starting theme; can be `'light'` or `'dark'`.         |
+| `autoAntiFlicker` |                   Boolean                    |   If `true`, injects an inline anti-flicker script to DOM.   |
 
 ### `useTheme()`
 
