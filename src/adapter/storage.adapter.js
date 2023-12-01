@@ -7,3 +7,7 @@ export const write = (key, value) => {
 export const erase = (key) => {
     localStorage.removeItem(key);
 }
+
+export const clear = () => {
+    localStorage.clear();
+}
