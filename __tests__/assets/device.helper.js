@@ -12,13 +12,27 @@ export function setDeviceTheme(theme) {
     })
 }
 
-export function setDeviceCookie(name, value) {
-    Object.defineProperty(window.document, 'cookie', {
-        writable: true,
-        value: `${name}=${value}`,
-    });
-}
+export function mockDeviceStorage() {
+    const localStorageMock = (function() {
+        let store = {}
 
-export function clearAllDeviceCookies() {
-    document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+        return {
+            getItem: function(key) {
+                return store[key] || null;
+            },
+            setItem: function(key, value) {
+                store[key] = value.toString();
+            },
+            removeItem: function(key) {
+                delete store[key];
+            },
+            clear: function() {
+                store = {};
+            },
+        };
+    })();
+
+    Object.defineProperty(window, 'localStorage', {
+        value: localStorageMock,
+    });
 }
