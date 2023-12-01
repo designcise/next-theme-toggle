@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ThemeProvider } from '../src/client';
-import { mockDeviceStorage, setDeviceTheme } from './assets/device.helper';
+import { mockDeviceStorage, mockPreferredColorScheme } from './assets/device.helper';
 import { read, write, clear } from '../src/adapter/storage.adapter';
 import ThemeAutoToggle from './assets/ThemeAutoToggle';
 import ThemeManualToggle from './assets/ThemeManualToggle';
@@ -53,7 +53,7 @@ describe('provider', () => {
         'dark',
     ])('should set resolve to system resolved theme "%s"', (theme) => {
         const storageKey = 'sys-resolved-theme';
-        setDeviceTheme(theme);
+        mockPreferredColorScheme(theme);
 
         render(
             <ThemeProvider storageKey={storageKey}>

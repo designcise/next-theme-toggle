@@ -1,4 +1,4 @@
-export function setDeviceTheme(theme) {
+export function mockPreferredColorScheme(theme) {
     Object.defineProperty(window, 'matchMedia', {
         writable: true,
         value: jest.fn().mockImplementation(query => ({
