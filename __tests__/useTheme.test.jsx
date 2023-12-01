@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ThemeProvider } from '../src/client';
-import { mockDeviceStorage, mockPreferredColorScheme } from './assets/device.helper';
+import { mockDeviceStorage, mockPreferredColorScheme } from './assets/device.mock';
 import { clear, read } from '../src/adapter/storage.adapter';
 import ThemeAutoToggle from './assets/ThemeAutoToggle';
 import ThemeManualToggle from './assets/ThemeManualToggle';
