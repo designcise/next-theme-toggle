@@ -3,19 +3,22 @@
 A simple theme toggle for Next.js 13+ that allows switching between light and dark themes. Using this package would result in the following `class` and `style` attributes added to the `<html>` element:
 
 ```html
-<html class="dark" style="color-scheme:dark">
+<html class="dark" style="color-scheme:dark"></html>
 ```
 
 You can then [use different CSS selectors to create styles for dark/light themes](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js#switching-theme).
 
-## Goals
+## Features
 
-- Provide an easy way of toggling between light and dark themes
-- Auto-switch theme on page load based on system settings
-- Avoid flicker on page load
-- Have no unnecessary bloat
-- Have very minimal configuration
-- Be simple and intuitive
+- Easy implementation with just _two_ lines of code
+- No flicker on page load
+- Toggle between `light`, `dark` and `auto` modes
+- Automatically choose color based on `prefers-color-scheme` when in "`auto`" mode
+- Update color when `prefers-color-scheme` changes in `auto` mode
+- Switch to opposite color when toggling from "`auto`"
+- Data is stored in `localStorage`
+- No unnecessary bloat
+- Well-tested
 
 ## Installation
 
@@ -46,13 +49,11 @@ At a bare minimum you need to do the following:
 
 ```jsx
 // app/layout.js
-import { cookies } from 'next/headers';
-import { Html, ThemeProvider } from '@designcise/next-theme-toggle';
-import { getColors } from '@designcise/next-theme-toggle/server';
+import { ThemeProvider } from '@designcise/next-theme-toggle';
+import { themes } from '@designcise/next-theme-toggle/server';
 
 // 1: specify key for storage
-const THEME_STORAGE_KEY = 'theme-preference';
-const color = getColors();
+const THEME_STORAGE_KEY = 'theme-preference'
 
 export default async function RootLayout() {
   // 2: wrap components with `ThemeProvider` to pass theme props down to all components
@@ -60,7 +61,7 @@ export default async function RootLayout() {
   return (
     <html>
       <body>
-        <ThemeProvider storageKey={THEME_STORAGE_KEY} defaultTheme={color.dark}>
+        <ThemeProvider storageKey={THEME_STORAGE_KEY} defaultTheme={themes.dark}>
           {children}
         </ThemeProvider>
       </body>
@@ -77,35 +78,31 @@ With this setup, the `ThemeProvider` component will automatically inject an inli
 // components/ToggleThemeButton/index.jsx
 'use client'
 
-import React, { useContext } from 'react';
-import { useTheme } from '@designcise/next-theme-toggle';
+import React, { useContext } from 'react'
+import { useTheme } from '@designcise/next-theme-toggle'
 
 export default function ToggleThemeButton() {
-  const { toggleTheme } = useTheme();
+  const { toggleTheme } = useTheme()
 
-  return (
-    <button onClick={toggleTheme}>Toggle Theme</button>
-  )
+  return <button onClick={toggleTheme}>Toggle Theme</button>
 }
 ```
 
-You can also do this manually by using `theme`, `color`, and `setTheme()`, for example, like so:
+You can also do this manually by using `theme`, `themes`, `colors` and `setTheme()`, for example, like so:
 
 ```jsx
 // components/ToggleThemeButton/index.jsx
 'use client'
 
-import React, { useContext } from 'react';
-import { useTheme } from '@designcise/next-theme-toggle';
+import React, { useContext } from 'react'
+import { useTheme } from '@designcise/next-theme-toggle'
 
 export default function ToggleThemeButton() {
-    const { theme, color, setTheme } = useTheme();
+  const { theme, themes, colors, setTheme } = useTheme()
 
   return (
-    <button
-        onClick={() => setTheme(theme === color.dark ? color.light : color.dark)}
-    >
-        Toggle Theme
+    <button onClick={() => setTheme(theme === themes.dark ? colors.light : colors.dark)}>
+      Toggle Theme
     </button>
   )
 }
@@ -115,7 +112,7 @@ export default function ToggleThemeButton() {
 
 ```jsx
 // app/page.js
-import ToggleThemeButton from '@/components/ToggleThemeButton';
+import ToggleThemeButton from '@/components/ToggleThemeButton'
 
 export default async function Home() {
   return (
@@ -177,44 +174,47 @@ That's it! You should have light/dark theme toggle in your Next.js application.
 
 You can pass the following props to `ThemeProvider`:
 
-| Prop           |                     Type                     |                            Description                             |
-|----------------|:--------------------------------------------:|:------------------------------------------------------------------:|
-| `children`     | `React.ReactChild`&vert;`React.ReactChild[]` |    Components to which the theme is passed down to via context.    |
-| `storageKey`   |                    String                    |                 Name of the key used for storage.                  |
-| `defaultTheme` |                    String                    | Default theme (`'light'` or `'dark'`) to use on initial page load. |
+| Prop           |                     Type                     |                                      Description                                       |
+|----------------|:--------------------------------------------:|:--------------------------------------------------------------------------------------:|
+| `children`     | `React.ReactChild`&vert;`React.ReactChild[]` |              Components to which the theme is passed down to via context.              |
+| `storageKey`   |                    String                    |                           Name of the key used for storage.                            |
+| `defaultTheme` |                    String                    | Default theme (`'light'`, `'dark'` or `auto`) to use on page load. Defaults to `auto`. |
 
 ### `useTheme()`
 
 The `useTheme()` hook does not take any params; it returns the following:
 
-| Return Value  |   Type   |                             Description                             |
-|---------------|:--------:|:-------------------------------------------------------------------:|
-| `theme`       |  String  |              The active theme (`'light'` or `'dark'`).              |
-| `color`       |  Object  | Color keys (`'light'` or `'dark'`) to compare active theme against. |
-| `setTheme`    | Function |                      Setter to set new theme.                       |
-| `toggleTheme` | Function |            Toggles the theme between `light` and `dark`.            |
+| Return Value  |   Type   |                                                                       Description                                                                        |
+|---------------|:--------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| `theme`       |  String  |                                                   The active theme (`'light'`, `'dark'` or `'auto'`).                                                    |
+| `themes`      |  Object  |                                            Allowed themes (`{ light: 'light', dark: 'dark', auto: 'auto' }`).                                            |
+| `color`       |  String  |                                                          The active color (`light` or `dark`).                                                           |
+| `colors`      |  Object  | Allowed colors (`{ light: 'light', dark: 'dark', auto: 'dark'&vert;'light' }`). `colors.auto` returns `dark` or `light` based on `prefers-color-scheme`. |
+| `setTheme`    | Function |                                                                 Setter to set new theme.                                                                 |
+| `toggleTheme` | Function |           Toggles the theme between `light` and `dark`. When toggling from `auto`, the opposite color to active color is automatically chosen.           |
 
-### `getColors()`
+### `themes`
 
-Returns an object, with the following:
+An object, with the following properties:
 
-| Property |  Type  |   Value   |               Description                |
-|----------|:------:|:---------:|:----------------------------------------:|
-| `light`  | String | `'light'` |    Color value used for light theme.     |
-| `theme`  | String | `'dark'`. |     Color value used for dark theme.     |
+| Property |  Type  |   Value   |                         Description                          |
+|----------|:------:|:---------:|:------------------------------------------------------------:|
+| `light`  | String | `'light'` |             Color value used for "light" theme.              |
+| `dark`   | String | `'dark'`. |              Color value used for "dark" theme.              |
+| `auto`   | String | `'auto'`. | Auto-determine color scheme based on `prefers-color-scheme`. |
 
-> **NOTE**: The `getColors()` function can be used in both, client components and server components.
+> **NOTE**: The `themes` object can be used in both, client components and server components.
 
-For server components you can import `getColors()` like so:
+For server components you can import `themes` like so:
 
 ```jsx
-import { getColors } from '@designcise/next-theme-toggle/server';
+import { themes } from '@designcise/next-theme-toggle/server'
 ```
 
 For client components, you can import it like so:
 
 ```jsx
-import { getColors } from '@designcise/next-theme-toggle';
+import { themes } from '@designcise/next-theme-toggle'
 ```
 
 ## Testing
@@ -237,8 +237,8 @@ $ yarn test
 
 ### Reporting
 
-* File issues at https://github.com/designcise/next-theme-toggle/issues
-* Issue patches to https://github.com/designcise/next-theme-toggle/pulls
+- File issues at https://github.com/designcise/next-theme-toggle/issues
+- Issue patches to https://github.com/designcise/next-theme-toggle/pulls
 
 ### Troubleshooting Common Issues
 
@@ -270,7 +270,7 @@ To fix this, you can add the folder where your CSS or SASS file is located. For 
 
 #### `Warning: Extra attributes from the server: class,style` in Console
 
-This warning _only_ shows on dev build and _not_ in the production build. This happens because the injected script adds _additional_ `class` and `style` attributes to the `html` element which _do not_ originally exist on the server-side generated page, leading to a mismatch in the server-side and client-side rendered page.
+You can safely ignore this warning as it _only_ shows on dev build and _not_ in the production build. This happens because the injected inline script adds _additional_ `class` and `style` attributes to the `html` element which _do not_ originally exist on the server-side generated page, leading to a _mismatch_ in the server-side and client-side rendered page.
 
 ## Contributing
 
@@ -283,4 +283,3 @@ https://github.com/designcise/next-theme-toggle/blob/main/LICENSE.md
 ## Resources
 
 - [https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js).
-
