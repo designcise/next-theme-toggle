@@ -1,32 +1,50 @@
 'use client'
 
-import React, { useEffect, useState, useCallback } from 'react';
-import ThemeContext from './ThemeContext';
-import AntiFlickerScript from '../component/AntiFlickerScript';
-import { getPreference, setPreference } from '../helper/theme.helper';
-import { getColors } from '../helper/color.helper';
+import React, { useEffect, useState, useCallback } from 'react'
+import ThemeContext from './ThemeContext'
+import AntiFlickerScript from '../component/AntiFlickerScript'
+import {
+  themes,
+  colors,
+  flipThemeByColor,
+  getColorByTheme,
+  getTheme,
+  saveTheme,
+} from '../helper/theme.helper'
 
-const color = getColors();
+export default function ThemeProvider({ children, storageKey, defaultTheme = themes.auto }) {
+  const [theme, setTheme] = useState(getTheme(storageKey, defaultTheme))
+  const [color, setColor] = useState(getColorByTheme(theme))
 
-export default function ThemeProvider({
-    children,
-    storageKey,
-    defaultTheme,
-}) {
-    const [theme, setTheme] = useState(getPreference(storageKey, defaultTheme));
+  const updateTheme = useCallback(
+    (storageKey, theme) => {
+      setColor(getColorByTheme(theme))
+      saveTheme(storageKey, theme)
+    },
+    [storageKey, theme, setColor],
+  )
 
-    useEffect(() => {
-        setPreference(storageKey, theme);
-    }, [storageKey, theme]);
+  const toggleTheme = useCallback(() => setTheme(flipThemeByColor(color)), [color, setTheme])
 
-    const toggleTheme = useCallback(() => {
-        setTheme(theme === color.dark ? color.light : color.dark);
-    }, [theme, setTheme]);
+  useEffect(() => updateTheme(storageKey, theme), [storageKey, theme, updateTheme])
 
-    return (
-        <ThemeContext.Provider value={{ theme, color, setTheme, toggleTheme }}>
-            <AntiFlickerScript storageKey={storageKey} defaultTheme={defaultTheme} color={color} />
-            {children}
-        </ThemeContext.Provider>
-    );
+  useEffect(() => {
+    if (typeof window === 'undefined' || theme !== themes.auto) {
+      return
+    }
+
+    const updateFn = () => updateTheme(storageKey, theme)
+
+    const mediaQuery = window.matchMedia(`(prefers-color-scheme: ${colors.dark})`)
+    mediaQuery.addEventListener('change', updateFn)
+
+    return () => mediaQuery.removeEventListener('change', updateFn)
+  }, [theme, setTheme])
+
+  return (
+    <ThemeContext.Provider value={{ theme, themes, color, colors, toggleTheme, setTheme }}>
+      <AntiFlickerScript storageKey={storageKey} defaultTheme={defaultTheme} />
+      {children}
+    </ThemeContext.Provider>
+  )
 }
