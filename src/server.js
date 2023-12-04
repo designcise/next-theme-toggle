@@ -1,1 +1,1 @@
-export { getColors } from './helper/color.helper';
+export { themes } from './helper/theme.helper'
