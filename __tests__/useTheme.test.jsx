@@ -1,174 +1,170 @@
-/*
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { colors, ThemeProvider } from '../src/client';
-import { mockDeviceStorage, mockPreferredColorScheme } from './assets/device.mock';
-import { clear, read } from '../src/adapter/storage.adapter';
-import ThemeAutoToggle from './assets/ThemeAutoToggle';
-import ThemeManualToggle from './assets/ThemeManualToggle';
-import ThemeSwitcher from './assets/ThemeSwitcher';
-import '@testing-library/jest-dom';
+import React from 'react'
+import { render, screen, fireEvent } from '@testing-library/react'
+import { ThemeProvider } from '../src/client'
+import { mockLocalStorage, mockMatchMedia, mockPreferredColorScheme } from './mocks/device.mock'
+import { clear, read } from '../src/adapter/storage.adapter'
+import ThemeAutoToggle from './assets/ThemeAutoToggle'
+import ThemeManualToggle from './assets/ThemeManualToggle'
+import ThemeSwitcher from './assets/ThemeSwitcher'
+import '@testing-library/jest-dom'
 
 beforeAll(() => {
-    mockDeviceStorage();
-});
+  mockLocalStorage()
+  mockMatchMedia()
+})
 
 beforeEach(() => {
-    clear();
-    document.documentElement.style.colorScheme = ''
-    document.documentElement.removeAttribute('class');
-});
+  clear()
+  document.documentElement.style.colorScheme = ''
+  document.documentElement.removeAttribute('class')
+})
 
 describe('useTheme', () => {
-    test.skip.each([
-        [colors.light, colors.dark],
-        [colors.dark, colors.light],
-    ])('should toggle "%s" theme to "%s"', (themeFrom, themeTo) => {
-        const storageKey = 'test';
+  test.each([
+    ['light', 'dark'],
+    ['dark', 'light'],
+  ])('should toggle "%s" theme to "%s"', (themeFrom, themeTo) => {
+    const storageKey = 'test'
 
-        render(
-            <ThemeProvider storageKey={storageKey} defaultTheme={themeFrom}>
-                <ThemeAutoToggle />
-            </ThemeProvider>
-        );
+    render(
+      <ThemeProvider storageKey={storageKey} defaultTheme={themeFrom}>
+        <ThemeAutoToggle />
+      </ThemeProvider>,
+    )
 
-        expect(document.documentElement.classList[0]).toBe(themeFrom);
-        expect(document.documentElement.style.colorScheme).toBe(themeFrom);
+    expect(read(storageKey)).toEqual(themeFrom)
+    expect(document.documentElement.classList[0]).toBe(themeFrom)
+    expect(document.documentElement.style.colorScheme).toBe(themeFrom)
 
-        fireEvent.click(screen.getByText(/toggle theme/i));
+    fireEvent.click(screen.getByText(/toggle theme/i))
 
-        expect(document.documentElement.classList[0]).toBe(themeTo);
-        expect(document.documentElement.style.colorScheme).toBe(themeTo);
-    });
+    expect(read(storageKey)).toEqual(themeTo)
+    expect(document.documentElement.classList[0]).toBe(themeTo)
+    expect(document.documentElement.style.colorScheme).toBe(themeTo)
+  })
 
-    test.skip.each([
-        [colors.light, colors.dark],
-        [colors.dark, colors.light],
-    ])('should toggle from system resolved "%s" theme to opposite theme "%s"', (themeFrom, themeTo) => {
-        const storageKey = 'sys-resolved-theme';
-        mockPreferredColorScheme(themeFrom);
+  test.each([
+    ['light', 'dark'],
+    ['dark', 'light'],
+  ])(
+    'should toggle from system resolved "%s" theme to opposite theme "%s" when using `toggle` function',
+    (themeFrom, themeTo) => {
+      const storageKey = 'sys-resolved-theme'
+      mockPreferredColorScheme(themeFrom)
 
-        render(
-            <ThemeProvider storageKey={storageKey}>
-                <ThemeAutoToggle />
-            </ThemeProvider>
-        );
+      render(
+        <ThemeProvider storageKey={storageKey}>
+          <ThemeAutoToggle />
+        </ThemeProvider>,
+      )
 
-        expect(document.documentElement.classList[0]).toBe(themeFrom);
-        expect(document.documentElement.style.colorScheme).toBe(themeFrom);
+      expect(read(storageKey)).toEqual('auto')
+      expect(document.documentElement.classList[0]).toBe(themeFrom)
+      expect(document.documentElement.style.colorScheme).toBe(themeFrom)
 
-        fireEvent.click(screen.getByText(/toggle theme/i));
+      fireEvent.click(screen.getByText(/toggle theme/i))
 
-        expect(document.documentElement.classList[0]).toBe(themeTo);
-        expect(document.documentElement.style.colorScheme).toBe(themeTo);
-    });
+      expect(read(storageKey)).toEqual(themeTo)
+      expect(document.documentElement.classList[0]).toBe(themeTo)
+      expect(document.documentElement.style.colorScheme).toBe(themeTo)
+    },
+  )
 
-    test.skip.each([
-        [colors.light, colors.dark],
-        [colors.dark, colors.light],
-    ])('should get right values to manually set theme from "%s" to "%s"', (themeFrom, themeTo) => {
-        const storageKey = 'test';
+  test.each([
+    ['light', 'dark'],
+    ['dark', 'light'],
+  ])('should get right values to manually set theme from "%s" to "%s"', (themeFrom, themeTo) => {
+    const storageKey = 'test'
 
-        render(
-            <ThemeProvider storageKey={storageKey} defaultTheme={themeFrom}>
-                <ThemeManualToggle />
-            </ThemeProvider>
-        );
+    render(
+      <ThemeProvider storageKey={storageKey} defaultTheme={themeFrom}>
+        <ThemeManualToggle />
+      </ThemeProvider>,
+    )
 
-        expect(document.documentElement.classList[0]).toBe(themeFrom);
-        expect(document.documentElement.style.colorScheme).toBe(themeFrom);
+    expect(read(storageKey)).toEqual(themeFrom)
 
-        fireEvent.click(screen.getByText(/toggle theme/i));
+    fireEvent.click(screen.getByText(/toggle theme/i))
 
-        expect(document.documentElement.classList[0]).toBe(themeTo);
-        expect(document.documentElement.style.colorScheme).toBe(themeTo);
-    });
+    expect(read(storageKey)).toEqual(themeTo)
+  })
 
-    test.skip.each([
-        colors.light,
-        colors.dark,
-    ])('should get "%s" as the active theme and color', (theme) => {
-        const storageKey = 'user-theme';
-        const oppositeTheme = (theme === colors.light) ? colors.dark : colors.light;
+  test.each(['light', 'dark'])('should get "%s" as the active `theme` and `color`', (theme) => {
+    const storageKey = 'user-theme'
+    const oppositeTheme = theme === 'light' ? 'dark' : 'light'
 
-        render(
-            <ThemeProvider storageKey={storageKey} defaultTheme={oppositeTheme}>
-                <ThemeSwitcher />
-            </ThemeProvider>
-        );
+    render(
+      <ThemeProvider storageKey={storageKey} defaultTheme={oppositeTheme}>
+        <ThemeSwitcher />
+      </ThemeProvider>,
+    )
 
-        fireEvent.click(screen.getByText(new RegExp(`${theme} theme`, 'i')));
+    fireEvent.click(screen.getByText(new RegExp(`${theme} theme`, 'i')))
 
-        expect(screen.getByText(`Active Theme: ${theme}`)).toBeInTheDocument();
-        expect(screen.getByText(`Active Color: ${theme}`)).toBeInTheDocument();
-        expect(read(storageKey)).toEqual(theme);
-    });
+    expect(screen.getByText(`Active Theme: ${theme}`)).toBeInTheDocument()
+    expect(screen.getByText(`Active Color: ${theme}`)).toBeInTheDocument()
+    expect(read(storageKey)).toEqual(theme)
+  })
 
-    test.skip.each([
-        colors.light,
-        colors.dark,
-    ])('should get "%s" as the active color when theme is set to "auto"', (colorScheme) => {
-        const storageKey = 'user-theme';
-        mockPreferredColorScheme(colorScheme);
+  test.each(['light', 'dark'])(
+    'should get "%s" as the active `color` when theme is set to "auto"',
+    (colorScheme) => {
+      const storageKey = 'user-theme'
+      mockPreferredColorScheme(colorScheme)
 
-        render(
-            <ThemeProvider storageKey={storageKey} defaultTheme={colors.auto}>
-                <ThemeSwitcher />
-            </ThemeProvider>
-        );
+      render(
+        <ThemeProvider storageKey={storageKey} defaultTheme="auto">
+          <ThemeSwitcher />
+        </ThemeProvider>,
+      )
 
-        expect(screen.getByText(`Active Theme: ${colors.auto}`)).toBeInTheDocument();
-        expect(screen.getByText(`Active Color: ${colorScheme}`)).toBeInTheDocument();
-    });
+      expect(screen.getByText('Active Theme: auto')).toBeInTheDocument()
+      expect(screen.getByText(`Active Color: ${colorScheme}`)).toBeInTheDocument()
+    },
+  )
 
-    /!*test.skip.each([
-        colors.light,
-        colors.dark,
-    ])('should get "%s" as the active color when theme is set to "auto"', (colorScheme) => {
-        const storageKey = 'user-theme';
-        const oppositeColor = (colorScheme === colors.light) ? colors.dark : colors.light;
+  test.each([
+    ['light', 'dark'],
+    ['dark', 'light'],
+  ])(
+    'should switch to opposite color of "%s" when toggling from "auto"',
+    (sysPrefColor, switchToTheme) => {
+      const storageKey = 'sys-resolved-theme'
+      mockPreferredColorScheme(sysPrefColor)
 
-        mockPreferredColorScheme(oppositeColor);
+      render(
+        <ThemeProvider storageKey={storageKey} defaultTheme="auto">
+          <ThemeAutoToggle />
+        </ThemeProvider>,
+      )
 
-        render(
-            <ThemeProvider storageKey={storageKey} defaultTheme={colors.auto}>
-                <ThemeSwitcher />
-            </ThemeProvider>
-        );
+      expect(read(storageKey)).toEqual('auto')
+      expect(document.documentElement.classList[0]).toBe(sysPrefColor)
+      expect(document.documentElement.style.colorScheme).toBe(sysPrefColor)
 
-        expect(screen.getByText(`Active Theme: ${colors.auto}`)).toBeInTheDocument();
-        expect(screen.getByText(`Active Color: ${oppositeColor}`)).toBeInTheDocument();
+      fireEvent.click(screen.getByText(/toggle theme/i))
 
-        mockPreferredColorScheme(colorScheme);
+      expect(read(storageKey)).toEqual(switchToTheme)
+      expect(document.documentElement.classList[0]).toBe(switchToTheme)
+      expect(document.documentElement.style.colorScheme).toBe(switchToTheme)
+    },
+  )
 
-        fireEvent.click(screen.getByText(new RegExp(`${oppositeTheme} theme`, 'i')));
+  test.each(['light', 'dark'])(
+    'should auto-determine color to be "%s" via `colors.auto`',
+    (prefColor) => {
+      const storageKey = 'sys-resolved-theme'
+      mockPreferredColorScheme(prefColor)
 
-        expect(screen.getByText(`Active Theme: ${colors.auto}`)).toBeInTheDocument();
-        expect(screen.getByText(`Active Color: ${color}`)).toBeInTheDocument();
-    });*!/
+      render(
+        <ThemeProvider storageKey={storageKey} defaultTheme="auto">
+          <ThemeAutoToggle />
+        </ThemeProvider>,
+      )
 
-    test.skip.each([
-        [colors.light, colors.dark],
-        [colors.dark, colors.light],
-    ])('should switch to opposite color of "%s" when toggling from "auto"', (sysTheme, switchToTheme) => {
-        const storageKey = 'sys-resolved-theme';
-        mockPreferredColorScheme(sysTheme);
-
-        render(
-            <ThemeProvider storageKey={storageKey} defaultTheme={colors.auto}>
-                <ThemeAutoToggle />
-            </ThemeProvider>
-        );
-
-        expect(read(storageKey)).toEqual(colors.auto);
-        expect(document.documentElement.classList[0]).toBe(sysTheme);
-        expect(document.documentElement.style.colorScheme).toBe(sysTheme);
-
-        fireEvent.click(screen.getByText(/toggle theme/i));
-
-        expect(read(storageKey)).toEqual(colors.auto);
-        expect(document.documentElement.classList[0]).toBe(switchToTheme);
-        expect(document.documentElement.style.colorScheme).toBe(switchToTheme);
-    });
-});
-*/
+      expect(read(storageKey)).toEqual('auto')
+      expect(document.documentElement.classList[0]).toBe(prefColor)
+      expect(document.documentElement.style.colorScheme).toBe(prefColor)
+    },
+  )
+})

@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { themes, ThemeProvider } from '../src/client'
+import { ThemeProvider } from '../src/client'
 import { mockLocalStorage, mockMatchMedia, mockPreferredColorScheme } from './mocks/device.mock'
 import { read, write, clear } from '../src/adapter/storage.adapter'
 import ThemeAutoToggle from './assets/ThemeAutoToggle'
@@ -19,6 +19,19 @@ beforeEach(() => {
 })
 
 describe('provider', () => {
+  test('should set storage key according to the specified value', () => {
+    const storageKey = 'theme-test'
+    const expectedTheme = 'light'
+
+    render(
+      <ThemeProvider storageKey={storageKey} defaultTheme={expectedTheme}>
+        <ThemeAutoToggle />
+      </ThemeProvider>,
+    )
+
+    expect(read(storageKey)).toEqual(expectedTheme)
+  })
+
   test.each(['light', 'dark'])(
     'should use the `defaultTheme` when nothing is stored in `localStorage`',
     (theme) => {
@@ -36,52 +49,29 @@ describe('provider', () => {
     },
   )
 
-  test.skip.each(['light', 'dark'])(
-    'should use the `defaultTheme` when nothing is stored in `localStorage`',
-    (theme) => {
+  test.each(['light', 'dark'])(
+    'should auto-determine theme color when nothing is stored in `localStorage` and `defaultTheme` is set to "auto"',
+    (color) => {
       const storageKey = 'test'
+      mockPreferredColorScheme(color)
 
       render(
-        <ThemeProvider storageKey={storageKey} defaultTheme={theme}>
+        <ThemeProvider storageKey={storageKey} defaultTheme="auto">
           <ThemeAutoToggle />
         </ThemeProvider>,
       )
 
-      expect(read(storageKey)).toEqual(theme)
-      expect(document.documentElement.classList[0]).toBe(theme)
-      expect(document.documentElement.style.colorScheme).toBe(theme)
+      expect(read(storageKey)).toEqual('auto')
+      expect(document.documentElement.classList[0]).toBe(color)
+      expect(document.documentElement.style.colorScheme).toBe(color)
     },
   )
 
-  test.skip.each(['light', 'dark', 'auto'])(
-    'should use the `defaultTheme` when nothing is stored in `localStorage`',
-    (theme) => {
+  test.each(['light', 'dark'])(
+    'should set `color-scheme` and `class` to "%s" theme color according to saved theme preference',
+    (color) => {
       const storageKey = 'test'
-
-      let userTheme = theme
-
-      if (userTheme === 'auto') {
-        userTheme = 'dark'
-        mockPreferredColorScheme(userTheme)
-      }
-
-      render(
-        <ThemeProvider storageKey={storageKey} defaultTheme={userTheme}>
-          <ThemeAutoToggle />
-        </ThemeProvider>,
-      )
-
-      expect(read(storageKey)).toEqual(userTheme)
-      expect(document.documentElement.classList[0]).toBe(userTheme)
-      expect(document.documentElement.style.colorScheme).toBe(userTheme)
-    },
-  )
-
-  test.skip.each(['light', 'dark'])(
-    'should set `color-scheme` and `class` to "%s" theme according to saved preference',
-    (theme) => {
-      const storageKey = 'test'
-      write(storageKey, theme)
+      write(storageKey, color)
 
       render(
         <ThemeProvider storageKey={storageKey}>
@@ -89,23 +79,18 @@ describe('provider', () => {
         </ThemeProvider>,
       )
 
-      expect(document.documentElement.classList[0]).toBe(theme)
-      expect(document.documentElement.style.colorScheme).toBe(theme)
+      expect(document.documentElement.classList[0]).toBe(color)
+      expect(document.documentElement.style.colorScheme).toBe(color)
     },
   )
 
-  test.skip.each(['light', 'dark', 'auto'])(
-    'should set resolve to system resolved theme "%s"',
-    (theme) => {
+  test.each(['light', 'dark', 'auto'])(
+    'should use system resolved "%s" color and "auto" theme when no `defaultTheme` is provided and nothing is stored in `localStorage`',
+    (color) => {
       const storageKey = 'sys-resolved-theme'
-      mockPreferredColorScheme(theme)
+      const prefColor = color === 'auto' ? 'dark' : color
 
-      let userTheme = theme
-
-      if (userTheme === 'auto') {
-        userTheme = 'dark'
-        mockPreferredColorScheme(userTheme)
-      }
+      mockPreferredColorScheme(prefColor)
 
       render(
         <ThemeProvider storageKey={storageKey}>
@@ -113,13 +98,31 @@ describe('provider', () => {
         </ThemeProvider>,
       )
 
-      expect(read(storageKey)).toEqual(userTheme)
-      expect(document.documentElement.classList[0]).toBe(userTheme)
-      expect(document.documentElement.style.colorScheme).toBe(userTheme)
+      expect(read(storageKey)).toEqual('auto')
+      expect(document.documentElement.classList[0]).toBe(prefColor)
+      expect(document.documentElement.style.colorScheme).toBe(prefColor)
     },
   )
 
-  test.skip.each([
+  test.each(['light', 'dark'])(
+    'should set theme color automatically based on user system preference',
+    (sysPrefColor) => {
+      const storageKey = 'sys-resolved-theme'
+      mockPreferredColorScheme(sysPrefColor)
+
+      render(
+        <ThemeProvider storageKey={storageKey} defaultTheme="auto">
+          <ThemeAutoToggle />
+        </ThemeProvider>,
+      )
+
+      expect(read(storageKey)).toEqual('auto')
+      expect(document.documentElement.classList[0]).toBe(sysPrefColor)
+      expect(document.documentElement.style.colorScheme).toBe(sysPrefColor)
+    },
+  )
+
+  test.each([
     ['light', 'dark'],
     ['dark', 'light'],
   ])('should ignore nested `ThemeProvider`', (expectedTheme, nestedTheme) => {
@@ -136,7 +139,7 @@ describe('provider', () => {
     expect(document.documentElement.classList[0]).toBe(expectedTheme)
   })
 
-  test.skip.each([
+  test.each([
     ['light', 'dark'],
     ['dark', 'light'],
   ])(
@@ -158,7 +161,7 @@ describe('provider', () => {
     },
   )
 
-  test.skip.each([
+  test.each([
     ['light', 'dark'],
     ['dark', 'light'],
   ])(
@@ -180,38 +183,7 @@ describe('provider', () => {
     },
   )
 
-  test.skip('should set storage key according to the specified value', () => {
-    const storageKey = 'theme-test'
-    const expectedTheme = 'light'
-
-    render(
-      <ThemeProvider storageKey={storageKey} defaultTheme={expectedTheme}>
-        <ThemeAutoToggle />
-      </ThemeProvider>,
-    )
-
-    expect(read(storageKey)).toEqual(expectedTheme)
-  })
-
-  test.skip.each(['light', 'dark'])(
-    'should set theme automatically based on user system preference',
-    (sysTheme) => {
-      const storageKey = 'sys-resolved-theme'
-      mockPreferredColorScheme(sysTheme)
-
-      render(
-        <ThemeProvider storageKey={storageKey} defaultTheme="auto">
-          <ThemeAutoToggle />
-        </ThemeProvider>,
-      )
-
-      expect(read(storageKey)).toEqual(sysTheme)
-      expect(document.documentElement.classList[0]).toBe(sysTheme)
-      expect(document.documentElement.style.colorScheme).toBe(sysTheme)
-    },
-  )
-
-  test.skip.each(['light', 'dark'])('should switch from "auto" to "%s"', (theme) => {
+  test.each(['light', 'dark'])('should switch from "auto" to "%s"', (theme) => {
     const storageKey = 'sys-resolved-theme'
     const oppositeTheme = theme === 'dark' ? 'light' : 'dark'
     mockPreferredColorScheme(oppositeTheme)
@@ -222,7 +194,7 @@ describe('provider', () => {
       </ThemeProvider>,
     )
 
-    expect(read(storageKey)).toEqual(oppositeTheme)
+    expect(read(storageKey)).toEqual('auto')
     expect(document.documentElement.classList[0]).toBe(oppositeTheme)
     expect(document.documentElement.style.colorScheme).toBe(oppositeTheme)
 
@@ -233,7 +205,7 @@ describe('provider', () => {
     expect(document.documentElement.style.colorScheme).toBe(theme)
   })
 
-  test.skip.each(['light', 'dark'])('should switch from "%s" to "auto"', (theme) => {
+  test.each(['light', 'dark'])('should switch from "%s" to "auto"', (theme) => {
     const storageKey = 'sys-resolved-theme'
     const oppositeTheme = theme === 'dark' ? 'light' : 'dark'
     mockPreferredColorScheme(oppositeTheme)
@@ -248,14 +220,14 @@ describe('provider', () => {
     expect(document.documentElement.classList[0]).toBe(theme)
     expect(document.documentElement.style.colorScheme).toBe(theme)
 
-    fireEvent.click(screen.getByText(new RegExp(`auto theme`, 'i')))
+    fireEvent.click(screen.getByText('Auto Theme'))
 
     expect(read(storageKey)).toEqual('auto')
     expect(document.documentElement.classList[0]).toBe(oppositeTheme)
     expect(document.documentElement.style.colorScheme).toBe(oppositeTheme)
   })
 
-  test.skip('should not set `colorScheme` and class name to "auto"', () => {
+  test('should not set `colorScheme` and class name to "auto"', () => {
     const storageKey = 'sys-resolved-theme'
 
     render(
