@@ -1,15 +1,12 @@
 import React, { memo } from 'react'
-import { themes, colors as palette, getColorByTheme } from '../helper/theme.helper'
+import { themes, colors as palette } from '../helper/theme.helper'
 
 export default memo(
-  function AntiFlickerScript({ storageKey, defaultTheme }) {
+  function AntiFlickerScript({ storageKey }) {
     const { [themes.auto]: _, ...colors } = palette
     const classList = Object.values(colors).join("','")
     const preferredTheme = `localStorage.getItem('${storageKey}')`
-    const fallbackTheme =
-      defaultTheme && defaultTheme !== themes.auto
-        ? `'${getColorByTheme(defaultTheme)}'`
-        : `(window.matchMedia('(prefers-color-scheme: ${colors.dark})').matches ? '${colors.dark}' : '${colors.light}')`
+    const fallbackTheme = `(window.matchMedia('(prefers-color-scheme: ${colors.dark})').matches ? '${colors.dark}' : '${colors.light}')`
     const script =
       '(function(root){' +
       `const pref=${preferredTheme};` +
