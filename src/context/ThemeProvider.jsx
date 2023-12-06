@@ -43,7 +43,7 @@ export default function ThemeProvider({ children, storageKey, defaultTheme = the
 
   return (
     <ThemeContext.Provider value={{ theme, themes, color, colors, toggleTheme, setTheme }}>
-      <AntiFlickerScript storageKey={storageKey} />
+      <AntiFlickerScript storageKey={storageKey} defaultTheme={defaultTheme} />
       {children}
     </ThemeContext.Provider>
   )
