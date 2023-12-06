@@ -17,7 +17,7 @@ export const colors = {
 export const getTheme = (storageKey, defaultTheme) =>
   isServer() ? undefined : read(storageKey) ?? defaultTheme ?? themes.auto
 
-export const getColorByTheme = (theme) => (isServer() ? undefined : colors[theme ?? theme.auto])
+export const getColorByTheme = (theme) => colors[theme ?? themes.auto]
 
 const colorToTheme = {
   [colors.dark]: themes.dark,
