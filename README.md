@@ -3,7 +3,9 @@
 A simple theme toggle for Next.js 13+ that allows switching between light and dark themes. Using this package would result in the following `class` and `style` attributes added to the `<html>` element:
 
 ```html
-<html class="dark" style="color-scheme:dark"></html>
+<html class="dark" style="color-scheme:dark">
+  <!-- ... -->
+</html>
 ```
 
 You can then [use different CSS selectors to create styles for dark/light themes](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js#switching-theme).
@@ -282,4 +284,5 @@ https://github.com/designcise/next-theme-toggle/blob/main/LICENSE.md
 
 ## Resources
 
-- [https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js).
+- [How to Create Non-Flickering Dark/Light Mode Toggle in Next.js Using `localStorage`?](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js-using-localstorage)
+- [How to Create Non-Flickering Dark/Light Mode Toggle in Next.js Using Cookies?](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js-using-cookies).
