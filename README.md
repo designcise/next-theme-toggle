@@ -1,26 +1,21 @@
 # next-theme-toggle
 
-This package is based on [https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js).
+A simple theme toggle for Next.js 13+ that allows switching between light and dark themes. Using this package would result in the following `class` and `style` attributes added to the `<html>` element:
+
+```html
+<html class="dark" style="color-scheme:dark">
+```
+
+You can then [use different CSS selectors to create styles for dark/light themes](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js-using-localstorage#adding-the-ability-to-switch-themes).
 
 ## Goals
-
-The goal of the project is to:
 
 - Provide an easy way of toggling between light and dark themes
 - Auto-switch theme on page load based on system settings
 - Avoid flicker on page load
 - Have no unnecessary bloat
 - Have very minimal configuration
-
-## Expectations
-
-Result of using this package will be that the following are added to the `<html>` element:
-
-```html
-<html class="dark" style="color-scheme:dark">
-```
-
-After which you can [use different CSS selectors to create styles for dark/light themes](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js#switching-theme).
+- Be simple and intuitive
 
 ## Installation
 
@@ -43,7 +38,7 @@ $ yarn add @designcise/next-theme-toggle
 
 ## Quickstart
 
-> **NOTE**: Please note that this approach relies on using cookies on client and server side, and will, therefore, cause the route to be dynamically rendered as cookies rely on request time information.
+> **NOTE**: Please note that this approach relies on using `localStorage` on the client side to store theme information.
 
 At a bare minimum you need to do the following:
 
@@ -55,48 +50,26 @@ import { cookies } from 'next/headers';
 import { Html, ThemeProvider } from '@designcise/next-theme-toggle';
 import { getColors } from '@designcise/next-theme-toggle/server';
 
-// 1: specify key for cookie storage
+// 1: specify key for storage
 const THEME_STORAGE_KEY = 'theme-preference';
 const color = getColors();
 
 export default async function RootLayout() {
-  // 2.1: get the user theme preference value from cookie, if one exists
-  // 2.2: set a default value in case the cookie doesn't exist (e.g. `?? color.light`)
-  const theme = cookies().get(THEME_STORAGE_KEY)?.value ?? color.light;
-
-  // 3.1: use the `Html` component to prevent flicker
-  // 3.2: wrap components with `ThemeProvider` to pass theme down to all components
+  // 2: wrap components with `ThemeProvider` to pass theme props down to all components
+  // 3: pass `storageKey` and (optional) `defaultTheme` to `ThemeProvider`
   return (
-    <Html theme={theme}>
+    <html>
       <body>
-        <ThemeProvider storageKey={THEME_STORAGE_KEY} theme={theme}>
+        <ThemeProvider storageKey={THEME_STORAGE_KEY} defaultTheme={color.dark}>
           {children}
         </ThemeProvider>
       </body>
-    </Html>
+    </html>
   )
 }
 ```
 
-The `Html` component is added for convenience. If you do not wish to use it, then you can achieve the same with the native `html` element in the following way:
-
-```jsx
-// replace:
-<Html theme={theme}>
-
-// with:
-<html className={theme} style={{ colorScheme: theme }}>
-```
-
-You may also choose to not do this step altogether and pass `autoAntiFlicker={true}` (or just `autoAntiFlicker`) to the `ThemeProvider` component, which will automatically inject a script into DOM that takes care of this for you. For example:
-
-```jsx
-<ThemeProvider storageKey={THEME_STORAGE_KEY} theme={theme} autoAntiFlicker>
-```
-
-All these approaches help you avoid flicker on initial page load.
-
-> **NOTE**: Please note that using the script injection method will show the `Warning: Extra attributes from the server: class,style` warning in console in the dev environment only. This is unavoidable unfortunately, as it happens because the injected script adds additional `class` and `style` attributes to the `html` element which do not originally exist on the server-side generated page.
+With this setup, the `ThemeProvider` component will automatically inject an inline script into DOM that takes care of avoiding flicker on initial page load.
 
 2. Create a button to toggle between light and dark theme:
 
@@ -204,12 +177,11 @@ That's it! You should have light/dark theme toggle in your Next.js application.
 
 You can pass the following props to `ThemeProvider`:
 
-| Prop              |                     Type                     |                         Description                          |
-|-------------------|:--------------------------------------------:|:------------------------------------------------------------:|
-| `children`        | `React.ReactChild`&vert;`React.ReactChild[]` | Components to which the theme is passed down to via context. |
-| `storageKey`      |                    String                    |              Name of the key used for storage.               |
-| `theme`           |                    String                    |        Starting theme; can be `'light'` or `'dark'`.         |
-| `autoAntiFlicker` |                   Boolean                    |   If `true`, injects an inline anti-flicker script to DOM.   |
+| Prop           |                     Type                     |                            Description                             |
+|----------------|:--------------------------------------------:|:------------------------------------------------------------------:|
+| `children`     | `React.ReactChild`&vert;`React.ReactChild[]` |    Components to which the theme is passed down to via context.    |
+| `storageKey`   |                    String                    |                 Name of the key used for storage.                  |
+| `defaultTheme` |                    String                    | Default theme (`'light'` or `'dark'`) to use on initial page load. |
 
 ### `useTheme()`
 
@@ -231,7 +203,7 @@ Returns an object, with the following:
 | `light`  | String | `'light'` |    Color value used for light theme.     |
 | `theme`  | String | `'dark'`. |     Color value used for dark theme.     |
 
-> **NOTE**: The `getColors()` function can be used in both, the client components and server components.
+> **NOTE**: The `getColors()` function can be used in both, client components and server components.
 
 For server components you can import `getColors()` like so:
 
@@ -296,6 +268,10 @@ To fix this, you can add the folder where your CSS or SASS file is located. For 
 // ...
 ```
 
+#### `Warning: Extra attributes from the server: class,style` in Console
+
+This warning _only_ shows on dev build and _not_ in the production build. This happens because the injected script adds _additional_ `class` and `style` attributes to the `html` element which _do not_ originally exist on the server-side generated page, leading to a mismatch in the server-side and client-side rendered page.
+
 ## Contributing
 
 https://github.com/designcise/next-theme-toggle/blob/main/CONTRIBUTING.md
@@ -303,3 +279,8 @@ https://github.com/designcise/next-theme-toggle/blob/main/CONTRIBUTING.md
 ## License
 
 https://github.com/designcise/next-theme-toggle/blob/main/LICENSE.md
+
+## Resources
+
+- [https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js-using-localstorage](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js-using-localstorage).
+

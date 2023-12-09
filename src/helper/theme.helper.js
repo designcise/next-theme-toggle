@@ -11,18 +11,14 @@ const applyPreference = (theme) => {
     root.style.colorScheme = theme;
 };
 
-export const getPreference = (storageKey) => {
+export const getPreference = (storageKey, defaultPref) => {
     if (isServer()) {
         return;
     }
 
-    const cookie = read(storageKey);
-
-    if (cookie) {
-        return cookie;
-    }
-
-    return window.matchMedia(`(prefers-color-scheme: ${color.dark})`).matches ? color.dark : color.light;
+    return read(storageKey)
+        ?? defaultPref
+        ?? (window.matchMedia(`(prefers-color-scheme: ${color.dark})`).matches ? color.dark : color.light)
 };
 
 export const setPreference = (storageKey, theme) => {

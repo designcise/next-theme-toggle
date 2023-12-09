@@ -1,14 +1,16 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ThemeProvider } from '../src/client';
-import { clearAllDeviceCookies, setDeviceTheme } from './assets/device.helper';
+import { mockDeviceStorage, mockPreferredColorScheme } from './assets/device.mock';
+import { clear, read } from '../src/adapter/storage.adapter';
 import ThemeAutoToggle from './assets/ThemeAutoToggle';
 import ThemeManualToggle from './assets/ThemeManualToggle';
 import ThemeSwitcher from './assets/ThemeSwitcher';
 import '@testing-library/jest-dom';
 
 beforeEach(() => {
-    clearAllDeviceCookies();
+    mockDeviceStorage();
+    clear();
     document.documentElement.style.colorScheme = ''
     document.documentElement.removeAttribute('class');
 });
@@ -21,7 +23,7 @@ describe('useTheme', () => {
         const storageKey = 'test';
 
         render(
-            <ThemeProvider storageKey={storageKey} theme={themeFrom}>
+            <ThemeProvider storageKey={storageKey} defaultTheme={themeFrom}>
                 <ThemeAutoToggle />
             </ThemeProvider>
         );
@@ -40,7 +42,7 @@ describe('useTheme', () => {
         ['dark', 'light'],
     ])('should toggle system resolved "%s" theme to "%s"', (themeFrom, themeTo) => {
         const storageKey = 'sys-resolved-theme';
-        setDeviceTheme(themeFrom);
+        mockPreferredColorScheme(themeFrom);
 
         render(
             <ThemeProvider storageKey={storageKey}>
@@ -64,7 +66,7 @@ describe('useTheme', () => {
         const storageKey = 'test';
 
         render(
-            <ThemeProvider storageKey={storageKey} theme={themeFrom}>
+            <ThemeProvider storageKey={storageKey} defaultTheme={themeFrom}>
                 <ThemeManualToggle />
             </ThemeProvider>
         );
@@ -83,9 +85,10 @@ describe('useTheme', () => {
         'dark',
     ])('should get "%s" as the active theme', (theme) => {
         const storageKey = 'user-theme';
+        const oppositeTheme = (theme === 'light') ? 'dark' : 'light';
 
         render(
-            <ThemeProvider storageKey={storageKey} theme="auto">
+            <ThemeProvider storageKey={storageKey} defaultTheme={oppositeTheme}>
                 <ThemeSwitcher />
             </ThemeProvider>
         );
@@ -93,6 +96,6 @@ describe('useTheme', () => {
         fireEvent.click(screen.getByText(new RegExp(`${theme} theme`, 'i')));
 
         expect(screen.getByText(`Active Theme: ${theme}`)).toBeInTheDocument();
-        expect(document.cookie).toEqual(expect.stringMatching(new RegExp(`${storageKey}=${theme}`)));
+        expect(read(storageKey)).toEqual(theme);
     });
 });

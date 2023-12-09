@@ -11,10 +11,9 @@ const color = getColors();
 export default function ThemeProvider({
     children,
     storageKey,
-    theme: startTheme,
-    autoAntiFlicker= false,
+    defaultTheme,
 }) {
-    const [theme, setTheme] = useState(startTheme ?? getPreference(storageKey));
+    const [theme, setTheme] = useState(getPreference(storageKey, defaultTheme));
 
     useEffect(() => {
         setPreference(storageKey, theme);
@@ -26,7 +25,7 @@ export default function ThemeProvider({
 
     return (
         <ThemeContext.Provider value={{ theme, color, setTheme, toggleTheme }}>
-            {autoAntiFlicker && <AntiFlickerScript theme={theme} color={color} />}
+            <AntiFlickerScript storageKey={storageKey} defaultTheme={defaultTheme} color={color} />
             {children}
         </ThemeContext.Provider>
     );
