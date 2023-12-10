@@ -1,28 +1,42 @@
-import { read, write, erase } from '../adapter/storage.adapter';
-import { getColors } from './color.helper';
+import { read, write, erase } from '../adapter/storage.adapter'
+import { isServer } from './env.helper'
 
-const color = getColors();
-const isServer = () => (typeof window === 'undefined');
+export const themes = { dark: 'dark', light: 'light', auto: 'auto' }
+export const colors = {
+  [themes.dark]: 'dark',
+  [themes.light]: 'light',
+  get [themes.auto]() {
+    return isServer()
+      ? undefined
+      : window.matchMedia(`(prefers-color-scheme: ${this[themes.dark]})`).matches
+        ? this[themes.dark]
+        : this[themes.light]
+  },
+}
 
-const applyPreference = (theme) => {
-    const root = document.firstElementChild;
-    root.classList.remove(...Object.values(color));
-    root.classList.add(theme);
-    root.style.colorScheme = theme;
-};
+export const getTheme = (storageKey, defaultTheme) =>
+  isServer() ? undefined : read(storageKey) ?? defaultTheme ?? themes.auto
 
-export const getPreference = (storageKey, defaultPref) => {
-    if (isServer()) {
-        return;
-    }
+export const getColorByTheme = (theme) => colors[theme ?? themes.auto]
 
-    return read(storageKey)
-        ?? defaultPref
-        ?? (window.matchMedia(`(prefers-color-scheme: ${color.dark})`).matches ? color.dark : color.light)
-};
+const colorToTheme = {
+  [colors.dark]: themes.dark,
+  [colors.light]: themes.light,
+}
 
-export const setPreference = (storageKey, theme) => {
-    erase(storageKey);
-    write(storageKey, theme);
-    applyPreference(theme);
+export const flipThemeByColor = (color) =>
+  colorToTheme[color] === themes.dark ? themes.light : themes.dark
+
+const applyTheme = (theme) => {
+  const color = getColorByTheme(theme)
+  const root = document.firstElementChild
+  root.classList.remove(...Object.values(colors))
+  root.classList.add(color)
+  root.style.colorScheme = color
+}
+
+export const saveTheme = (storageKey, theme) => {
+  erase(storageKey)
+  write(storageKey, theme)
+  applyTheme(theme)
 }

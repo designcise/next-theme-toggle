@@ -1,12 +1,22 @@
-import React, { memo } from 'react';
+import React, { memo } from 'react'
+import { themes, colors as palette, getColorByTheme } from '../helper/theme.helper'
 
-export default memo(function AntiFlickerScript({ storageKey, defaultTheme, color }) {
-    const classList = Object.values(color).join("','");
-    const preferredTheme = `localStorage.getItem('${storageKey}')`;
-    const fallbackTheme = defaultTheme ? `'${defaultTheme}'` : `(window.matchMedia('(prefers-color-scheme: ${color.dark})').matches ? '${color.dark}' : '${color.light}')`;
-    const script = '(function(root){'
-        + `const theme=${preferredTheme}??${fallbackTheme};`
-        + `root.classList.remove('${classList}');root.classList.add(theme);root.style.colorScheme=theme;`
-     + `})(document.documentElement)`;
+export default memo(
+  function AntiFlickerScript({ storageKey, defaultTheme }) {
+    const { [themes.auto]: _, ...colors } = palette
+    const classList = Object.values(colors).join("','")
+    const preferredTheme = `localStorage.getItem('${storageKey}')`
+    const fallbackTheme =
+      defaultTheme && defaultTheme !== themes.auto
+        ? `'${getColorByTheme(defaultTheme)}'`
+        : `(window.matchMedia('(prefers-color-scheme: ${colors.dark})').matches?'${colors.dark}':'${colors.light}')`
+    const script =
+      '(function(root){' +
+      `const pref=${preferredTheme};` +
+      `const theme=(pref&&pref!=='${themes.auto}')?pref:${fallbackTheme};` +
+      `root.classList.remove('${classList}');root.classList.add(theme);root.style.colorScheme=theme;` +
+      `})(document.documentElement)`
     return <script dangerouslySetInnerHTML={{ __html: script }} />
-}, () => true);
+  },
+  () => true,
+)

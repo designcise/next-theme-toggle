@@ -1,8 +1,10 @@
-import { createContext } from 'react';
+import { createContext } from 'react'
 
 export default createContext({
-    theme: undefined,
-    color: undefined,
-    toggleTheme: () => {},
-    setTheme: () => {},
-});
+  theme: undefined,
+  themes: undefined,
+  color: undefined,
+  colors: undefined,
+  toggleTheme: () => {},
+  setTheme: () => {},
+})
