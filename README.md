@@ -285,4 +285,4 @@ https://github.com/designcise/next-theme-toggle/blob/main/LICENSE.md
 ## Resources
 
 - [How to Create Non-Flickering Dark/Light Mode Toggle in Next.js Using `localStorage`?](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js-using-localstorage)
-- [How to Create Non-Flickering Dark/Light Mode Toggle in Next.js Using Cookies?](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js-using-cookies).
+- [How to Create Non-Flickering Dark/Light Mode Toggle in Next.js Using Cookies?](https://www.designcise.com/web/tutorial/how-to-create-non-flickering-dark-or-light-mode-toggle-in-next-js-using-cookies)
