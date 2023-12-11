@@ -42,7 +42,8 @@
     "prettier": "3.1.0",
     "rollup": "^4.6.0",
     "rollup-plugin-swc3": "^0.10.4",
-    "rollup-swc-preserve-directives": "^0.7.0"
+    "rollup-swc-preserve-directives": "^0.7.0",
+    "typescript": "^5.3.3"
   },
   "keywords": [
     "dark",
