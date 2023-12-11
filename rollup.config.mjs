@@ -4,13 +4,13 @@ import { nodeResolve } from '@rollup/plugin-node-resolve'
 
 export default {
   input: {
-    client: 'src/client.js',
-    server: 'src/server.js',
+    client: 'src/client.ts',
+    server: 'src/server.ts',
   },
   output: [
     {
       dir: 'dist/',
-      entryFileNames: '[name].js',
+      entryFileNames: '[name].ts',
       format: 'esm',
       exports: 'named',
       sourcemap: false,
@@ -21,7 +21,7 @@ export default {
     swc(),
     swcPreserveDirectives(),
     nodeResolve({
-      extensions: ['.js'],
+      extensions: ['.js', '.ts'],
       mainFields: ['exports', 'main'],
     }),
   ],
