@@ -14,11 +14,11 @@ export function mockMatchMedia() {
   })
 }
 
-export function mockPreferredColorScheme(theme, options = {}) {
+export function mockPreferredColorScheme(color, options = {}) {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
     value: jest.fn().mockImplementation((query) => ({
-      matches: theme === 'dark',
+      matches: color === 'dark',
       media: query,
       onchange: null,
       addEventListener: jest.fn(),
