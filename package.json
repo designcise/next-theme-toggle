@@ -1,19 +1,24 @@
 {
   "name": "@designcise/next-theme-toggle",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "A simple theme toggle for Next.js 13+",
   "exports": {
-    ".": "./dist/client.js",
-    "./server": "./dist/server.js"
+    ".": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    }
   },
   "files": [
     "src",
     "dist"
   ],
   "scripts": {
-    "prepare": "rollup -c",
-    "start": "rollup -c -w",
-    "test": "jest --silent=false",
+    "prepare": "tsc",
+    "test": "jest --silent=false --verbose",
     "lint": "prettier . --check",
     "lint:fix": "prettier . --write"
   },
@@ -24,6 +29,8 @@
     "url": "git+https://github.com/designcise/next-theme-toggle.git"
   },
   "peerDependencies": {
+    "@types/react": ">=18.0.0",
+    "@types/react-dom": ">=18.0.0",
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
   },
@@ -32,17 +39,16 @@
     "@babel/plugin-proposal-optional-chaining": "^7.21.0",
     "@babel/preset-env": "^7.23.3",
     "@babel/preset-react": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^14.1.2",
-    "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "prettier": "3.1.0",
-    "rollup": "^4.6.0",
-    "rollup-plugin-swc3": "^0.10.4",
-    "rollup-swc-preserve-directives": "^0.7.0",
+    "process": "^0.11.10",
+    "ts-jest": "^29.1.1",
     "typescript": "^5.3.3"
   },
   "keywords": [
@@ -63,5 +69,11 @@
   "bugs": {
     "url": "https://github.com/designcise/next-theme-toggle/issues"
   },
-  "homepage": "https://github.com/designcise/next-theme-toggle#readme"
+  "homepage": "https://github.com/designcise/next-theme-toggle#readme",
+  "dependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
 }
