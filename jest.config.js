@@ -11,12 +11,9 @@ module.exports = {
         tsconfig: 'tsconfig.test.json',
       },
     ],
-    //'^.+\\.tsx?$': 'babel-jest',
-    // "^.+\\.mjs$": "babel-jest",
   },
   setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
   testPathIgnorePatterns: [
-    //'<rootDir>/build/',
     '<rootDir>/node_modules/',
     '<rootDir>/dist/',
     '<rootDir>/__tests__/assets/',
