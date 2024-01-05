@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "isolatedModules": true,
+  },
+  "include": [
+    "./setupTests.ts"
+  ]
+}
