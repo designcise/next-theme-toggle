@@ -1,8 +1,7 @@
-'use client'
-
 import { useContext } from 'react'
 import ThemeContext from '../context/ThemeContext'
+import { ThemeContextType } from '../types'
 
 export default function useTheme() {
-  return useContext(ThemeContext)
+  return useContext<ThemeContextType>(ThemeContext)
 }
