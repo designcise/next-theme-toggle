@@ -1,12 +1,11 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { ThemeProvider } from '../src/client'
+import { ThemeProvider, themes } from '../src/client'
 import { mockLocalStorage, mockMatchMedia, mockPreferredColorScheme } from './mocks/device.mock'
 import { clear, read } from '../src/adapter/storage.adapter'
 import ThemeAutoToggle from './assets/ThemeAutoToggle'
 import ThemeManualToggle from './assets/ThemeManualToggle'
 import ThemeSwitcher from './assets/ThemeSwitcher'
-import '@testing-library/jest-dom'
 
 beforeAll(() => {
   mockLocalStorage()
@@ -19,7 +18,7 @@ beforeEach(() => {
   document.documentElement.removeAttribute('class')
 })
 
-describe('useTheme', () => {
+describe('useTheme()', () => {
   test.each([
     ['light', 'dark'],
     ['dark', 'light'],
@@ -89,22 +88,25 @@ describe('useTheme', () => {
     expect(read(storageKey)).toEqual(themeTo)
   })
 
-  test.each(['light', 'dark'])('should get "%s" as the active `theme` and `color`', (theme) => {
-    const storageKey = 'user-theme'
-    const oppositeTheme = theme === 'light' ? 'dark' : 'light'
+  test.each([themes.light, themes.dark])(
+    'should get "%s" as the active `theme` and `color`',
+    (theme) => {
+      const storageKey = 'user-theme'
+      const oppositeTheme = theme.type === 'light' ? themes.dark.type : themes.light.type
 
-    render(
-      <ThemeProvider storageKey={storageKey} defaultTheme={oppositeTheme}>
-        <ThemeSwitcher />
-      </ThemeProvider>,
-    )
+      render(
+        <ThemeProvider storageKey={storageKey} defaultTheme={oppositeTheme}>
+          <ThemeSwitcher />
+        </ThemeProvider>,
+      )
 
-    fireEvent.click(screen.getByText(new RegExp(`${theme} theme`, 'i')))
+      fireEvent.click(screen.getByText(new RegExp(`${theme.type} theme`, 'i')))
 
-    expect(screen.getByText(`Active Theme: ${theme}`)).toBeInTheDocument()
-    expect(screen.getByText(`Active Color: ${theme}`)).toBeInTheDocument()
-    expect(read(storageKey)).toEqual(theme)
-  })
+      expect(screen.getByText(`Active Theme: ${theme.type}`)).toBeInTheDocument()
+      expect(screen.getByText(`Active Color: ${theme.color}`)).toBeInTheDocument()
+      expect(read(storageKey)).toEqual(theme.type)
+    },
+  )
 
   test.each(['light', 'dark'])(
     'should get "%s" as the active `color` when theme is set to "auto"',

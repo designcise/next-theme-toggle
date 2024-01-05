@@ -6,6 +6,7 @@ import { read, write, clear } from '../src/adapter/storage.adapter'
 import ThemeAutoToggle from './assets/ThemeAutoToggle'
 import ThemeManualToggle from './assets/ThemeManualToggle'
 import ThemeSwitcher from './assets/ThemeSwitcher'
+import { DEFAULT_STORAGE_KEY } from '../src/helper/env.helper'
 
 beforeAll(() => {
   mockLocalStorage()
@@ -18,7 +19,7 @@ beforeEach(() => {
   document.documentElement.removeAttribute('class')
 })
 
-describe('provider', () => {
+describe('ThemeProvider', () => {
   test('should set storage key according to the specified value', () => {
     const storageKey = 'theme-test'
     const expectedTheme = 'light'
@@ -30,6 +31,18 @@ describe('provider', () => {
     )
 
     expect(read(storageKey)).toEqual(expectedTheme)
+  })
+
+  test('should use default storage key when none is specified value', () => {
+    const expectedThemeType = 'light'
+
+    render(
+      <ThemeProvider defaultTheme={expectedThemeType}>
+        <ThemeAutoToggle />
+      </ThemeProvider>,
+    )
+
+    expect(read(DEFAULT_STORAGE_KEY)).toEqual(expectedThemeType)
   })
 
   test.each(['light', 'dark'])(
@@ -231,7 +244,7 @@ describe('provider', () => {
     const storageKey = 'sys-resolved-theme'
 
     render(
-      <ThemeProvider storageKey={storageKey} theme="auto">
+      <ThemeProvider storageKey={storageKey} defaultTheme="auto">
         <ThemeSwitcher />
       </ThemeProvider>,
     )

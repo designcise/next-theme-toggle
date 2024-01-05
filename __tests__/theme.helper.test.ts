@@ -2,7 +2,14 @@ import './mocks/matchMedia.mock'
 import './mocks/localStorage.mock'
 import { mockPreferredColorScheme } from './mocks/device.mock'
 import { write, clear } from '../src/adapter/storage.adapter'
-import { colors, flipThemeByColor, getTheme, getColorByTheme } from '../src/helper/theme.helper'
+import {
+  themes,
+  colors,
+  getFlippedThemeByColor,
+  getThemeByKey,
+  getColorByThemeType,
+} from '../src/helper/theme.helper'
+import { ThemeTypes } from '../src/types'
 
 const storageKey = 'theme-pref'
 
@@ -10,18 +17,18 @@ beforeEach(() => {
   clear()
 })
 
-describe('getTheme()', () => {
+describe('getThemeByKey()', () => {
   test.each([
-    [undefined, undefined, 'auto'],
-    [undefined, 'dark', 'dark'],
-    [undefined, 'light', 'light'],
-    [undefined, 'auto', 'auto'],
-    ['dark', undefined, 'dark'],
-    ['light', undefined, 'light'],
-    ['auto', undefined, 'auto'],
-    ['dark', 'light', 'dark'],
-    ['light', 'dark', 'light'],
-    ['auto', 'light', 'auto'],
+    [undefined, undefined, themes.auto],
+    [undefined, 'dark', themes.dark],
+    [undefined, 'light', themes.light],
+    [undefined, 'auto', themes.auto],
+    ['dark', undefined, themes.dark],
+    ['light', undefined, themes.light],
+    ['auto', undefined, themes.auto],
+    ['dark', 'light', themes.dark],
+    ['light', 'dark', themes.light],
+    ['auto', 'light', themes.auto],
   ])(
     'should get the theme from storage or the fallback',
     (storedTheme, defaultTheme, expectedTheme) => {
@@ -29,40 +36,48 @@ describe('getTheme()', () => {
         write(storageKey, storedTheme)
       }
 
-      expect(getTheme(storageKey, defaultTheme)).toEqual(expectedTheme)
+      const activeTheme = getThemeByKey(storageKey, defaultTheme)
+
+      expect(activeTheme).toEqual(expectedTheme)
     },
   )
 })
 
-describe('getColorByTheme()', () => {
+describe('getColorByThemeType()', () => {
   test.each([
-    ['dark', colors.dark],
-    ['light', colors.light],
-    ['auto', colors.dark],
-  ])('should get the color based on the theme', (theme, expectedColor) => {
-    if (theme === 'auto') {
-      mockPreferredColorScheme(expectedColor)
-    }
+    [themes.dark, colors.dark],
+    [themes.light, colors.light],
+    [themes.auto, colors.dark],
+  ])(
+    'should get the color based on the theme (theme: "%o", color: "%s")',
+    (theme, expectedColor) => {
+      if (theme.type === ThemeTypes.auto) {
+        mockPreferredColorScheme(expectedColor)
+      }
 
-    expect(getColorByTheme(theme)).toEqual(expectedColor)
-  })
+      expect(getColorByThemeType(theme.type)).toEqual(expectedColor)
+    },
+  )
 })
 
-describe('flipThemeByColor()', () => {
+describe('getFlippedThemeByColor()', () => {
   test.each([
-    [colors.dark, 'light'],
-    [colors.light, 'dark'],
-  ])('should get the opposite theme based on the color', (color, expectedTheme) => {
-    expect(flipThemeByColor(color)).toEqual(expectedTheme)
-  })
+    [colors.dark, themes.light],
+    [colors.light, themes.dark],
+  ])(
+    'should get the opposite theme based on the color (color: "%s", theme: "%o")',
+    (color, expectedTheme) => {
+      expect(getFlippedThemeByColor(color)).toEqual(expectedTheme)
+    },
+  )
 })
 
-describe('colors', () => {
+describe('themes.auto.color', () => {
   test.each(['dark', 'light'])(
-    'should automatically determine the color based on the system preferred color',
+    'should automatically determine the color based on the system preferred color "%s"',
     (prefColor) => {
       mockPreferredColorScheme(prefColor)
-      expect(colors.auto).toEqual(prefColor)
+      expect(themes.auto.color).toEqual(prefColor)
     },
   )
 })
