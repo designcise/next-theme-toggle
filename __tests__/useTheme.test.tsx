@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { ThemeProvider, themes } from '../src/client'
 import { mockLocalStorage, mockMatchMedia, mockPreferredColorScheme } from './mocks/device.mock'
@@ -90,7 +89,7 @@ describe('useTheme()', () => {
 
   test.each([themes.light, themes.dark])(
     'should get "%s" as the active `theme` and `color`',
-    (theme) => {
+    theme => {
       const storageKey = 'user-theme'
       const oppositeTheme = theme.type === 'light' ? themes.dark.type : themes.light.type
 
@@ -110,7 +109,7 @@ describe('useTheme()', () => {
 
   test.each(['light', 'dark'])(
     'should get "%s" as the active `color` when theme is set to "auto"',
-    (colorScheme) => {
+    colorScheme => {
       const storageKey = 'user-theme'
       mockPreferredColorScheme(colorScheme)
 
@@ -154,7 +153,7 @@ describe('useTheme()', () => {
 
   test.each(['light', 'dark'])(
     'should auto-determine color to be "%s" via `colors.auto`',
-    (prefColor) => {
+    prefColor => {
       const storageKey = 'sys-resolved-theme'
       mockPreferredColorScheme(prefColor)
 
