@@ -20,5 +20,5 @@
     "src/server.ts",
     "src/types.ts",
   ],
-  "exclude": ["__tests__/*", "node_modules", "dist"]
+  "exclude": ["__tests__/**/*", "node_modules", "dist"]
 }
