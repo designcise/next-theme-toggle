@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
     "target": "es2018",
-    "module": "commonjs",
-    "jsx": "preserve",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "jsx": "react",
     "declaration": true,
     "sourceMap": true,
     "declarationMap": true,
     "esModuleInterop": true,
+    "resolvePackageJsonExports": true,
     "types": [
     ],
     "lib": [
