@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { ThemeProvider } from '../src/client'
 import { mockLocalStorage, mockMatchMedia, mockPreferredColorScheme } from './mocks/device.mock'
@@ -47,7 +46,7 @@ describe('ThemeProvider', () => {
 
   test.each(['light', 'dark'])(
     'should use the `defaultTheme` when nothing is stored in `localStorage`',
-    (theme) => {
+    theme => {
       const storageKey = 'test'
 
       render(
@@ -64,7 +63,7 @@ describe('ThemeProvider', () => {
 
   test.each(['light', 'dark'])(
     'should auto-determine theme color when nothing is stored in `localStorage` and `defaultTheme` is set to "auto"',
-    (color) => {
+    color => {
       const storageKey = 'test'
       mockPreferredColorScheme(color)
 
@@ -82,7 +81,7 @@ describe('ThemeProvider', () => {
 
   test.each(['light', 'dark'])(
     'should set `color-scheme` and `class` to "%s" theme color according to saved theme preference',
-    (color) => {
+    color => {
       const storageKey = 'test'
       write(storageKey, color)
 
@@ -99,7 +98,7 @@ describe('ThemeProvider', () => {
 
   test.each(['light', 'dark', 'auto'])(
     'should use system resolved "%s" color and "auto" theme when no `defaultTheme` is provided and nothing is stored in `localStorage`',
-    (color) => {
+    color => {
       const storageKey = 'sys-resolved-theme'
       const prefColor = color === 'auto' ? 'dark' : color
 
@@ -119,7 +118,7 @@ describe('ThemeProvider', () => {
 
   test.each(['light', 'dark'])(
     'should set theme color automatically based on user system preference',
-    (sysPrefColor) => {
+    sysPrefColor => {
       const storageKey = 'sys-resolved-theme'
       mockPreferredColorScheme(sysPrefColor)
 
@@ -196,7 +195,7 @@ describe('ThemeProvider', () => {
     },
   )
 
-  test.each(['light', 'dark'])('should switch from "auto" to "%s"', (theme) => {
+  test.each(['light', 'dark'])('should switch from "auto" to "%s"', theme => {
     const storageKey = 'sys-resolved-theme'
     const oppositeTheme = theme === 'dark' ? 'light' : 'dark'
     mockPreferredColorScheme(oppositeTheme)
@@ -218,7 +217,7 @@ describe('ThemeProvider', () => {
     expect(document.documentElement.style.colorScheme).toBe(theme)
   })
 
-  test.each(['light', 'dark'])('should switch from "%s" to "auto"', (theme) => {
+  test.each(['light', 'dark'])('should switch from "%s" to "auto"', theme => {
     const storageKey = 'sys-resolved-theme'
     const oppositeTheme = theme === 'dark' ? 'light' : 'dark'
     mockPreferredColorScheme(oppositeTheme)
