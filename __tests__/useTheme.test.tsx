@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { render, screen, fireEvent } from '@testing-library/react'
 import { ThemeProvider, themes } from '../src/client'
 import { mockLocalStorage, mockMatchMedia, mockPreferredColorScheme } from './mocks/device.mock'

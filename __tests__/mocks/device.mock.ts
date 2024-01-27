@@ -1,7 +1,8 @@
+// @ts-nocheck
 export function mockMatchMedia() {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
-    value: jest.fn().mockImplementation((query) => ({
+    value: jest.fn().mockImplementation(query => ({
       matches: false,
       media: query,
       onchange: null,
@@ -17,7 +18,7 @@ export function mockMatchMedia() {
 export function mockPreferredColorScheme(color, options = {}) {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
-    value: jest.fn().mockImplementation((query) => ({
+    value: jest.fn().mockImplementation(query => ({
       matches: color === 'dark',
       media: query,
       onchange: null,

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import './mocks/matchMedia.mock'
 import './mocks/localStorage.mock'
 import { mockPreferredColorScheme } from './mocks/device.mock'
@@ -75,7 +76,7 @@ describe('getFlippedThemeByColor()', () => {
 describe('themes.auto.color', () => {
   test.each(['dark', 'light'])(
     'should automatically determine the color based on the system preferred color "%s"',
-    (prefColor) => {
+    prefColor => {
       mockPreferredColorScheme(prefColor)
       expect(themes.auto.color).toEqual(prefColor)
     },
