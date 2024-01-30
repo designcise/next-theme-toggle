@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "jsx": "react",
+    "declaration": true,
+    "sourceMap": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "types": [
+    ],
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "outDir": "dist"
+  },
+  "files": [
+    "src/client.ts",
+    "src/server.ts",
+    "src/types.ts",
+  ],
+  "exclude": ["__tests__/**/*", "node_modules", "dist"]
+}

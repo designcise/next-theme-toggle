@@ -1,10 +1,9 @@
 import { createContext } from 'react'
+import { ThemeContextType } from '../types'
 
-export default createContext({
+export default createContext<ThemeContextType>({
   theme: undefined,
   themes: undefined,
-  color: undefined,
-  colors: undefined,
   toggleTheme: () => {},
   setTheme: () => {},
 })

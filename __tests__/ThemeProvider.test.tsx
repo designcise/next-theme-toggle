@@ -1,4 +1,4 @@
-import React from 'react'
+// @ts-nocheck
 import { render, screen, fireEvent } from '@testing-library/react'
 import { ThemeProvider } from '../src/client'
 import { mockLocalStorage, mockMatchMedia, mockPreferredColorScheme } from './mocks/device.mock'
@@ -6,6 +6,7 @@ import { read, write, clear } from '../src/adapter/storage.adapter'
 import ThemeAutoToggle from './assets/ThemeAutoToggle'
 import ThemeManualToggle from './assets/ThemeManualToggle'
 import ThemeSwitcher from './assets/ThemeSwitcher'
+import { DEFAULT_STORAGE_KEY } from '../src/helper/env.helper'
 
 beforeAll(() => {
   mockLocalStorage()
@@ -18,7 +19,7 @@ beforeEach(() => {
   document.documentElement.removeAttribute('class')
 })
 
-describe('provider', () => {
+describe('ThemeProvider', () => {
   test('should set storage key according to the specified value', () => {
     const storageKey = 'theme-test'
     const expectedTheme = 'light'
@@ -32,9 +33,21 @@ describe('provider', () => {
     expect(read(storageKey)).toEqual(expectedTheme)
   })
 
+  test('should use default storage key when none is specified value', () => {
+    const expectedThemeType = 'light'
+
+    render(
+      <ThemeProvider defaultTheme={expectedThemeType}>
+        <ThemeAutoToggle />
+      </ThemeProvider>,
+    )
+
+    expect(read(DEFAULT_STORAGE_KEY)).toEqual(expectedThemeType)
+  })
+
   test.each(['light', 'dark'])(
     'should use the `defaultTheme` when nothing is stored in `localStorage`',
-    (theme) => {
+    theme => {
       const storageKey = 'test'
 
       render(
@@ -51,7 +64,7 @@ describe('provider', () => {
 
   test.each(['light', 'dark'])(
     'should auto-determine theme color when nothing is stored in `localStorage` and `defaultTheme` is set to "auto"',
-    (color) => {
+    color => {
       const storageKey = 'test'
       mockPreferredColorScheme(color)
 
@@ -69,7 +82,7 @@ describe('provider', () => {
 
   test.each(['light', 'dark'])(
     'should set `color-scheme` and `class` to "%s" theme color according to saved theme preference',
-    (color) => {
+    color => {
       const storageKey = 'test'
       write(storageKey, color)
 
@@ -86,7 +99,7 @@ describe('provider', () => {
 
   test.each(['light', 'dark', 'auto'])(
     'should use system resolved "%s" color and "auto" theme when no `defaultTheme` is provided and nothing is stored in `localStorage`',
-    (color) => {
+    color => {
       const storageKey = 'sys-resolved-theme'
       const prefColor = color === 'auto' ? 'dark' : color
 
@@ -106,7 +119,7 @@ describe('provider', () => {
 
   test.each(['light', 'dark'])(
     'should set theme color automatically based on user system preference',
-    (sysPrefColor) => {
+    sysPrefColor => {
       const storageKey = 'sys-resolved-theme'
       mockPreferredColorScheme(sysPrefColor)
 
@@ -183,7 +196,7 @@ describe('provider', () => {
     },
   )
 
-  test.each(['light', 'dark'])('should switch from "auto" to "%s"', (theme) => {
+  test.each(['light', 'dark'])('should switch from "auto" to "%s"', theme => {
     const storageKey = 'sys-resolved-theme'
     const oppositeTheme = theme === 'dark' ? 'light' : 'dark'
     mockPreferredColorScheme(oppositeTheme)
@@ -205,7 +218,7 @@ describe('provider', () => {
     expect(document.documentElement.style.colorScheme).toBe(theme)
   })
 
-  test.each(['light', 'dark'])('should switch from "%s" to "auto"', (theme) => {
+  test.each(['light', 'dark'])('should switch from "%s" to "auto"', theme => {
     const storageKey = 'sys-resolved-theme'
     const oppositeTheme = theme === 'dark' ? 'light' : 'dark'
     mockPreferredColorScheme(oppositeTheme)
@@ -231,7 +244,7 @@ describe('provider', () => {
     const storageKey = 'sys-resolved-theme'
 
     render(
-      <ThemeProvider storageKey={storageKey} theme="auto">
+      <ThemeProvider storageKey={storageKey} defaultTheme="auto">
         <ThemeSwitcher />
       </ThemeProvider>,
     )

@@ -13,6 +13,8 @@ You can then [use different CSS selectors to create styles for dark/light themes
 ## Features
 
 - Easy implementation with just _two_ lines of code
+- TypeScript Support
+- Types are automatically loaded, whenever applicable
 - No flicker on page load
 - Toggle between `light`, `dark` and `auto` modes
 - Automatically choose color based on `prefers-color-scheme` when in "`auto`" mode
@@ -54,16 +56,13 @@ At a bare minimum you need to do the following:
 import { ThemeProvider } from '@designcise/next-theme-toggle';
 import { themes } from '@designcise/next-theme-toggle/server';
 
-// 1: specify key for storage
-const THEME_STORAGE_KEY = 'theme-preference'
-
 export default async function RootLayout() {
-  // 2: wrap components with `ThemeProvider` to pass theme props down to all components
-  // 3: pass `storageKey` and (optional) `defaultTheme` to `ThemeProvider`
+  // 1: wrap components with `ThemeProvider` to pass theme props down to all components
+  // 2: optionally pass `storageKey` and `defaultTheme` to `ThemeProvider`
   return (
     <html>
       <body>
-        <ThemeProvider storageKey={THEME_STORAGE_KEY} defaultTheme={themes.dark}>
+        <ThemeProvider storageKey="user-pref" defaultTheme={themes.dark.type}>
           {children}
         </ThemeProvider>
       </body>
@@ -73,6 +72,8 @@ export default async function RootLayout() {
 ```
 
 With this setup, the `ThemeProvider` component will automatically inject an inline script into DOM that takes care of avoiding flicker on initial page load.
+
+> **NOTE**: If you don't specify a `storageKey` or `defaultTheme` prop on `ThemeProvider`, default value will be used for `storageKey` while absence of `defaultTheme` would mean that the theme is automatically determined based on `prefers-color-scheme`. 
 
 2. Create a button to toggle between light and dark theme:
 
@@ -90,7 +91,7 @@ export default function ToggleThemeButton() {
 }
 ```
 
-You can also do this manually by using `theme`, `themes`, `colors` and `setTheme()`, for example, like so:
+You can also do this manually by using `theme`, `themes`, and `setTheme()`, for example, like so:
 
 ```jsx
 // components/ToggleThemeButton/index.jsx
@@ -100,10 +101,10 @@ import React, { useContext } from 'react'
 import { useTheme } from '@designcise/next-theme-toggle'
 
 export default function ToggleThemeButton() {
-  const { theme, themes, colors, setTheme } = useTheme()
+  const { theme, themes, setTheme } = useTheme()
 
   return (
-    <button onClick={() => setTheme(theme === themes.dark ? colors.light : colors.dark)}>
+    <button onClick={() => setTheme(theme.type === themes.dark.type ? themes.light : themes.dark)}>
       Toggle Theme
     </button>
   )
@@ -176,34 +177,32 @@ That's it! You should have light/dark theme toggle in your Next.js application.
 
 You can pass the following props to `ThemeProvider`:
 
-| Prop           |                     Type                     |                                      Description                                       |
-|----------------|:--------------------------------------------:|:--------------------------------------------------------------------------------------:|
-| `children`     | `React.ReactChild`&vert;`React.ReactChild[]` |              Components to which the theme is passed down to via context.              |
-| `storageKey`   |                    String                    |                           Name of the key used for storage.                            |
-| `defaultTheme` |                    String                    | Default theme (`'light'`, `'dark'` or `auto`) to use on page load. Defaults to `auto`. |
+| Prop           |                     Type                     |                                       Description                                       |
+|----------------|:--------------------------------------------:|:---------------------------------------------------------------------------------------:|
+| `children`     | `React.ReactChild`&vert;`React.ReactChild[]` |              Components to which the theme is passed down to via context.               |
+| `storageKey`   |                    String                    | Name of the key used for storage. Defaults to `DEFAULT_STORAGE_KEY` in `env.helper.ts`. |
+| `defaultTheme` |                    String                    | Default theme (`'light'`, `'dark'` or `auto`) to use on page load. Defaults to `auto`.  |
 
 ### `useTheme()`
 
 The `useTheme()` hook does not take any params; it returns the following:
 
-| Return Value  |   Type   |                                                                       Description                                                                        |
-|---------------|:--------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| `theme`       |  String  |                                                   The active theme (`'light'`, `'dark'` or `'auto'`).                                                    |
-| `themes`      |  Object  |                                            Allowed themes (`{ light: 'light', dark: 'dark', auto: 'auto' }`).                                            |
-| `color`       |  String  |                                                          The active color (`light` or `dark`).                                                           |
-| `colors`      |  Object  | Allowed colors (`{ light: 'light', dark: 'dark', auto: 'dark'&vert;'light' }`). `colors.auto` returns `dark` or `light` based on `prefers-color-scheme`. |
-| `setTheme`    | Function |                                                                 Setter to set new theme.                                                                 |
-| `toggleTheme` | Function |           Toggles the theme between `light` and `dark`. When toggling from `auto`, the opposite color to active color is automatically chosen.           |
+| Return Value  |   Type   |                                                             Description                                                              |
+|---------------|:--------:|:------------------------------------------------------------------------------------------------------------------------------------:|
+| `theme`       |  Object  |                                     The active theme (e.g. `{ type: 'light', color: 'light' }`).                                     |
+| `themes`      |  Object  |                     Allowed themes (e.g. `{ light: { type: 'light', color: 'light' }, dark: ..., auto: ... }`).                      |
+| `setTheme`    | Function |                                                       Setter to set new theme.                                                       |
+| `toggleTheme` | Function | Toggles the theme between `light` and `dark`. When toggling from `auto`, the opposite color to active color is automatically chosen. |
 
 ### `themes`
 
 An object, with the following properties:
 
-| Property |  Type  |   Value   |                         Description                          |
-|----------|:------:|:---------:|:------------------------------------------------------------:|
-| `light`  | String | `'light'` |             Color value used for "light" theme.              |
-| `dark`   | String | `'dark'`. |              Color value used for "dark" theme.              |
-| `auto`   | String | `'auto'`. | Auto-determine color scheme based on `prefers-color-scheme`. |
+| Property |  Type  |                      Value                       |                         Description                         |
+|----------|:------:|:------------------------------------------------:|:-----------------------------------------------------------:|
+| `light`  | Object |       `{ type: 'light', color: 'light' }`        |                        Light theme.                         |
+| `dark`   | Object |        `{ type: 'dark', color: 'dark' }`         |                         Dark theme.                         |
+| `auto`   | Object | `{ type: 'auto', color: 'dark' &vert; 'light' }` | Auto-determine theme color based on `prefers-color-scheme`. |
 
 > **NOTE**: The `themes` object can be used in both, client components and server components.
 
@@ -243,32 +242,6 @@ $ yarn test
 - Issue patches to https://github.com/designcise/next-theme-toggle/pulls
 
 ### Troubleshooting Common Issues
-
-#### Tailwind not updating dark mode styling
-
-This can happen when you have your CSS or SASS file in a sub-folder that is not listed in `content` array in the `tailwind.config.js`:
-
-```js
-// ...
-  content: [
-    './pages/**/*.{js,jsx}',
-    './components/**/*.{js,jsx}',
-    './app/**/*.{js,jsx}',
-    './src/**/*.{js,jsx}',
-  ],
-// ...
-```
-
-To fix this, you can add the folder where your CSS or SASS file is located. For example:
-
-```js
-// ...
-  content: [
-    // ...
-    './src/styles/**/*.css',
-  ],
-// ...
-```
 
 #### `Warning: Extra attributes from the server: class,style` in Console
 

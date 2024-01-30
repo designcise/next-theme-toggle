@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Node10",
+    "jsx": "react-jsx",
+    "isolatedModules": true,
+  },
+  "include": [
+    "./setupTests.ts"
+  ]
+}
