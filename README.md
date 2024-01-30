@@ -62,7 +62,7 @@ export default async function RootLayout() {
   return (
     <html>
       <body>
-        <ThemeProvider storageKey="user-pref" defaultTheme={themes.dark}>
+        <ThemeProvider storageKey="user-pref" defaultTheme={themes.dark.type}>
           {children}
         </ThemeProvider>
       </body>
